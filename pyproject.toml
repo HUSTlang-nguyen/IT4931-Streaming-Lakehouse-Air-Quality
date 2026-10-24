@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "air-quality-lakehouse"
+version = "0.0.0"
+description = "Pipeline OpenAQ, Streaming Lakehouse và dự báo PM2.5"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx==0.28.1",
+    "python-dotenv==1.1.1",
+    "confluent-kafka==2.11.0",
+    "filelock==3.19.1",
+    "tzdata==2025.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.2"]
+
+[project.scripts]
+air-quality = "air_quality.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["air_quality*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: cần dịch vụ hoặc tài nguyên tích hợp được cấu hình rõ ràng",
+    "live: cần OpenAQ API thật và API key cục bộ",
+]
