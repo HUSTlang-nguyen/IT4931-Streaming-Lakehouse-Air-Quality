@@ -33,7 +33,7 @@ Khi review hướng dẫn trong PR chưa merge, checkout nhánh PR sau clone tr�
 .venv/Scripts/python.exe scripts/verify_repository.py
 ```
 
-Kỳ vọng unit suite pass; tại checkpoint triển khai có 25 unit tests. Số lượng có thể tăng theo đóng góp. `verify_repository` kiểm Python syntax, TOML, links, diff và credential local không xuất hiện trong candidate files; không chứng minh pipeline đã chạy.
+Kỳ vọng unit suite pass; tại checkpoint onboarding có 26 unit tests. Số lượng có thể tăng theo đóng góp. `verify_repository` kiểm Python syntax, TOML, links, diff và credential local không xuất hiện trong candidate files; không chứng minh pipeline đã chạy.
 
 ## 3. Dựng core và runtime, rồi smoke
 

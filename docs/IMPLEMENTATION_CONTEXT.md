@@ -1,13 +1,13 @@
 # Context triển khai và contributor
 
-Checkpoint STEP-019, ngày24/10/2026. Repository root là thư mục IT4931-Streaming-Lakehouse-Air-Quality, không phải thư mục cha. Goal triển khai ban đầu đã complete; yêu cầu hiện tại chỉ hoàn thiện tài liệu contributor, không triển khai backlog/tạo lại Goal.
+Checkpoint STEP-020, cập nhật ngày25/10/2026. Repository root là thư mục IT4931-Streaming-Lakehouse-Air-Quality, không phải thư mục cha. Goal triển khai ban đầu đã complete; yêu cầu hiện tại chỉ hoàn thiện tài liệu contributor, không triển khai backlog/tạo lại Goal.
 
 ## Git và yêu cầu đang làm
 
 - PR#1/#2 đã merge bởi maintainer. Mainf39b307 có cùng tree với checkpoint bàn giao4889243; đã xác minh từ GitHub. Không còn draft PR#2 hoặc phần push dang dở của Goal cũ.
-- Nhánh docs/contributor-onboarding từ origin/mainf39b307. Đang thêm CONTRIBUTING.md, docs/SETUP.md, docs/BACKLOG.md; đồng bộ README/Goal prompt/labs/demo/context theo trạng thái đã merge.
-- Cần kiểm Markdown links/syntax/lệnh PowerShell, clone sạch với venv mới và unit tests không .env/dữ liệu/model/Java/Spark host; validate Compose bằng credential tạm trong clone riêng, không start stack thứ hai. Ghi kết quả artifacts/reports/contributor-onboarding.md rồi commit/push/draft PR tài liệu.
-- Source nghiệp vụ không đổi. Full Docker bootstrap trên máy/engine riêng còn mở ONB-01; không dùng cache/volumes hiện có làm bằng chứng máy sạch. Không xóa/dừng stack hiện có để giả lập.
+- Nhánh docs/contributor-onboarding từ origin/mainf39b307; docs candidatec02c3f1, fix first-run testsfbff886. CONTRIBUTING/SETUP/BACKLOG và README/labs/demo/context đã có; đang push/mở PR cho lượt onboarding.
+- Đã kiểm clone độc lập không .env/data/models/checkpoints/cache, venv mới Python3.13.12, pip install/check, CLI help,26unit pass, repo checks và Compose config --quiet.19PowerShell blocks parse pass. Báo cáo artifacts/reports/contributor-onboarding.md phân biệt kiểm chứng này với full Docker cold bootstrap.
+- Pipeline/ML behavior không đổi; operations.run_tests nay tạo artifacts/local trước pytest sau khi probe sạch phát hiện parent thiếu (15pass/10errors). Fixfbff886 và regression test26pass trên clone mới khác; source SHA256 `1c84eeafb37e7dad3e588004510fd1dd9d09c4abf81befa9daf27ffa3258b918`. Full Docker bootstrap trên máy/engine riêng còn mở ONB-01; không dùng cache/volumes hiện có làm bằng chứng máy sạch. Không xóa/dừng stack hiện có để giả lập.
 
 ## Điểm vào cho contributor/agent
 
