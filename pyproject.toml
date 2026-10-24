@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "air-quality-lakehouse"
+version = "0.0.0"
+description = "Scaffold Python cho đồ án Air Quality Streaming Lakehouse"
+readme = "README.md"
+requires-python = ">=3.10"
+# Scaffold import được; chưa phải runtime PySpark đã kiểm chứng.
+# Chốt dependencies/lock theo ma trận tương thích ở P1.
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["air_quality*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: cần dịch vụ hoặc tài nguyên tích hợp được cấu hình rõ ràng",
+    "live: cần OpenAQ API thật và API key cục bộ",
+]

@@ -1,0 +1,45 @@
+# Secret cục bộ; chỉ theo dõi template rỗng.
+.env
+.env.*
+!.env.example
+secrets/
+credentials/
+*.pem
+*.key
+
+# Python / build / công cụ.
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
+
+# Dữ liệu / model / checkpoint / volume / logs.
+data/
+models/
+checkpoints/
+volumes/
+logs/
+*.log
+*.parquet
+*.avro
+*.pkl
+*.joblib
+
+# Chỉ version-control báo cáo nhỏ đã làm sạch.
+/artifacts/*
+!/artifacts/README.md
+!/artifacts/reports/
+/artifacts/reports/*
+!/artifacts/reports/*.md
+!/artifacts/reports/*.json
