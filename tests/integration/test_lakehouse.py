@@ -143,3 +143,19 @@ def test_nullable_schema_evolution_preserves_old_bronze(spark):
     merge_bronze(correction, namespace)
     assert spark.table(table).count() == 2
     assert spark.table(table).filter("original_ingested_at IS NULL").count() == 1
+
+
+def test_null_business_key_quarantines_and_valid_time_recovers_correction(spark):
+    namespace = "replay_test_" + uuid4().hex[:10]
+    missing = {**event(1, 10), "series_kind": None}
+    process_events(frame(spark, [missing, missing]), namespace)
+    process_events(frame(spark, [missing]), namespace)
+    assert spark.table(f"lake.{namespace}.bronze").count() == 1
+    assert spark.table(f"lake.{namespace}.rejected").count() == 1
+    assert not spark.catalog.tableExists(f"lake.{namespace}.silver")
+    invalid_time = {**event(2, 20), "ingested_at": None}
+    process_events(frame(spark, [invalid_time]), namespace)
+    assert "invalid_ingested_at" in spark.table(f"lake.{namespace}.silver").first().quality_flags
+    process_events(frame(spark, [event(2, 40, observation=5)]), namespace)
+    recovered = spark.table(f"lake.{namespace}.silver").collect()
+    assert len(recovered) == 1 and recovered[0].value == 40 and recovered[0].quality_flags == []

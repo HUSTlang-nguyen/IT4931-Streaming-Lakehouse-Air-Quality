@@ -77,7 +77,7 @@ def normalize(frame: DataFrame) -> DataFrame:
         F.when(invalid_period | invalid_hour, F.lit("invalid_period")),
         F.when(F.col("raw.flagInfo.hasFlags") == True, F.lit("source_flagged")),
         F.when(~F.coalesce(known & (F.col("raw.parameter.name") == F.col("parameter_name")), F.lit(False)), F.lit("metadata_mismatch")),
-        F.when(~F.col("series_kind").isin("measurements", "hours"), F.lit("unknown_series")),
+        F.when(~F.coalesce(F.col("series_kind").isin("measurements", "hours"), F.lit(False)), F.lit("unknown_series")),
         F.when(F.col("ingested_at").isNull(), F.lit("invalid_ingested_at")),
     )
     return df.withColumn("quality_flags", F.filter(flags, lambda item: item.isNotNull())).select(

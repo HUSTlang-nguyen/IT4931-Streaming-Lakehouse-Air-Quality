@@ -62,8 +62,9 @@ def merge_silver(frame: DataFrame, namespace: str) -> None:
     source.createOrReplaceTempView("incoming_silver")
     condition = " AND ".join(f"t.{key}=s.{key}" for key in SILVER_KEYS)
     frame.sparkSession.sql(f"""MERGE INTO {table} t USING incoming_silver s ON {condition}
-        WHEN MATCHED AND (s.ingested_at > t.ingested_at OR
-            (s.ingested_at=t.ingested_at AND s.event_id>t.event_id)) THEN UPDATE SET *
+        WHEN MATCHED AND ((s.ingested_at IS NOT NULL AND t.ingested_at IS NULL)
+            OR s.ingested_at > t.ingested_at OR
+            ((s.ingested_at <=> t.ingested_at) AND s.event_id>t.event_id)) THEN UPDATE SET *
         WHEN NOT MATCHED THEN INSERT *""")
 
 
@@ -109,8 +110,14 @@ def process_events(frame: DataFrame, namespace: str, refresh: bool = True) -> di
         merge_bronze(frame, namespace)
         cleaned = normalize(frame).cache()
         try:
-            valid_key = F.col("period_start").isNotNull() & F.col("period_end").isNotNull() & F.col("sensor_id").isNotNull()
-            rejected = cleaned.filter(~valid_key)
+            # Mọi thành phần MERGE key phải non-null; SQL '=' không match null,
+            # nếu chỉ kiểm sensor/period thì thiếu series_kind sẽ nhân Silver.
+            valid_key = F.lit(True)
+            for key in SILVER_KEYS:
+                valid_key = valid_key & F.col(key).isNotNull()
+            # MERGE vào bảng rỗng sẽ insert cả hai source rows cùng event_id;
+            # dedup source trước, giống Bronze, để quarantine cũng retry an toàn.
+            rejected = latest_per_key(cleaned.filter(~valid_key), ["event_id"])
             rejected_count = rejected.count()
             if rejected_count:
                 table = f"lake.{namespace}.rejected"
