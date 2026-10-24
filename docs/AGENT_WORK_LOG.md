@@ -204,3 +204,9 @@ Hash commit mới ghi ở STEP sau, tránh tự tham chiếu hash chứa chính 
 - Clone mới khác ở temp, candidatefbff886, trước setup không .env/.venv/data/models/checkpoints/artifacts/local; environment loại API/service credentials. pip editable install/check +CLI help +26unit pass (0failure/error/skip), repository verifier pass, git clone vẫn sạch. Compose2.39.2 config --quiet với credential tạm pass, không start services. Probe38,41s;19PowerShell blocks parse/date format pass. Logs/JUnit/result local, không in/commit secret.
 - Báo cáo artifacts/reports/contributor-onboarding.md ghi môi trường Windows11/Python3.13.12, candidate/source fingerprint, lỗi/fix và giới hạn. Không tuyên bố full Docker từ trắng, không xóa volumes/cache hoặc tác động stack đang chạy. ONB-01 còn mở; không triển khai backlog/tạo Goal mới.
 - Handoff README/SETUP/CONTRIBUTING/BACKLOG/context đã đồng bộ. Pipeline/ML không thay đổi; chỉ test-runner artifact initialization,26unit kiểm phù hợp, không chạy lại Spark cho docs. Bước tiếp commit report/context, push và tạo draft PR/attach; không tự merge.
+
+## STEP-021 — 2026-10-25 — Push và bàn giao PR onboarding
+
+- Commitsc02c3f1 (tài liệu), fbff886 (first-run test fix),1012e7e (clean-clone evidence) đã push lên origin/docs/contributor-onboarding. Đã tạo/attach draft PR#3: https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality/pull/3, base main, không tự merge.
+- SETUP/CONTRIBUTING/BACKLOG/README/context đã đồng bộ trạng thái PR#1/#2 merged và PR#3 chờ review.26unit pass trên clone/venv mới, pip/CLI/repo/Compose config pass;19PowerShell blocks parse pass. Giới hạn full Docker cold-bootstrap còn mở ONB-01, không tạo Goal/triển khai backlog.
+- Metadata checkpoint này chuẩn bị commit/push cuối. Khi tiếp tục, kiểm trạng thái PR#3 thực tế trước khi dùng mô tả OPEN ở context; không giả định service/model/data của máy cũ có trên clone mới.
