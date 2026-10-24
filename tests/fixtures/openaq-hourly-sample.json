@@ -1,0 +1,262 @@
+{
+  "purpose": "Public OpenAQ hourly response sample; not a claim of live freshness when reused",
+  "attribution": "OpenAQ and upstream Hanoi AQ Monitoring Network; preserve original values",
+  "samples": [
+    {
+      "sensor_id": 13502154,
+      "location_id": 4946813,
+      "parameter_name": "pm25",
+      "captured_at": "2026-10-24T08:36:03.714697Z",
+      "source_url": "https://api.openaq.org/v3/sensors/13502154/hours",
+      "provider": {
+        "id": 67,
+        "name": "Hanoi Air Quality Monitoring Network"
+      },
+      "licenses": null,
+      "row": {
+        "value": 7.79,
+        "flagInfo": {
+          "hasFlags": false
+        },
+        "parameter": {
+          "id": 2,
+          "name": "pm25",
+          "units": "µg/m³",
+          "displayName": null
+        },
+        "period": {
+          "label": "1hour",
+          "interval": "01:00:00",
+          "datetimeFrom": {
+            "utc": "2026-10-23T00:00:00Z",
+            "local": "2026-10-23T07:00:00+07:00"
+          },
+          "datetimeTo": {
+            "utc": "2026-10-23T01:00:00Z",
+            "local": "2026-10-23T08:00:00+07:00"
+          }
+        },
+        "coordinates": null,
+        "summary": {
+          "min": 1.5,
+          "q02": 1.8888,
+          "q25": 5.2375,
+          "median": 7.960000000000001,
+          "q75": 9.585,
+          "q98": 13.8326,
+          "max": 14.18,
+          "avg": 7.788000000000001,
+          "sd": 2.6265612137400884
+        },
+        "coverage": {
+          "expectedCount": 1,
+          "expectedInterval": "01:00:00",
+          "observedCount": 10,
+          "observedInterval": "10:00:00",
+          "percentComplete": 1000.0,
+          "percentCoverage": 1000.0,
+          "datetimeFrom": {
+            "utc": "2026-10-22T23:05:00Z",
+            "local": "2026-10-23T06:05:00+07:00"
+          },
+          "datetimeTo": {
+            "utc": "2026-10-23T00:50:00Z",
+            "local": "2026-10-23T07:50:00+07:00"
+          }
+        }
+      }
+    },
+    {
+      "sensor_id": 13502152,
+      "location_id": 4946813,
+      "parameter_name": "pm10",
+      "captured_at": "2026-10-24T08:36:09.554510Z",
+      "source_url": "https://api.openaq.org/v3/sensors/13502152/hours",
+      "provider": {
+        "id": 67,
+        "name": "Hanoi Air Quality Monitoring Network"
+      },
+      "licenses": null,
+      "row": {
+        "value": 29.2,
+        "flagInfo": {
+          "hasFlags": false
+        },
+        "parameter": {
+          "id": 1,
+          "name": "pm10",
+          "units": "µg/m³",
+          "displayName": null
+        },
+        "period": {
+          "label": "1hour",
+          "interval": "01:00:00",
+          "datetimeFrom": {
+            "utc": "2026-10-23T00:00:00Z",
+            "local": "2026-10-23T07:00:00+07:00"
+          },
+          "datetimeTo": {
+            "utc": "2026-10-23T01:00:00Z",
+            "local": "2026-10-23T08:00:00+07:00"
+          }
+        },
+        "coordinates": null,
+        "summary": {
+          "min": 22.56,
+          "q02": 22.703,
+          "q25": 25.6,
+          "median": 27.97,
+          "q75": 33.345,
+          "q98": 37.3172,
+          "max": 37.59,
+          "avg": 29.189166666666665,
+          "sd": 3.8333834365255672
+        },
+        "coverage": {
+          "expectedCount": 1,
+          "expectedInterval": "01:00:00",
+          "observedCount": 12,
+          "observedInterval": "12:00:00",
+          "percentComplete": 1200.0,
+          "percentCoverage": 1200.0,
+          "datetimeFrom": {
+            "utc": "2026-10-22T23:05:00Z",
+            "local": "2026-10-23T06:05:00+07:00"
+          },
+          "datetimeTo": {
+            "utc": "2026-10-23T01:00:00Z",
+            "local": "2026-10-23T08:00:00+07:00"
+          }
+        }
+      }
+    },
+    {
+      "sensor_id": 13502151,
+      "location_id": 4946812,
+      "parameter_name": "pm25",
+      "captured_at": "2026-10-24T08:36:14.216944Z",
+      "source_url": "https://api.openaq.org/v3/sensors/13502151/hours",
+      "provider": {
+        "id": 67,
+        "name": "Hanoi Air Quality Monitoring Network"
+      },
+      "licenses": null,
+      "row": {
+        "value": 22.5,
+        "flagInfo": {
+          "hasFlags": false
+        },
+        "parameter": {
+          "id": 2,
+          "name": "pm25",
+          "units": "µg/m³",
+          "displayName": null
+        },
+        "period": {
+          "label": "1hour",
+          "interval": "01:00:00",
+          "datetimeFrom": {
+            "utc": "2026-10-23T00:00:00Z",
+            "local": "2026-10-23T07:00:00+07:00"
+          },
+          "datetimeTo": {
+            "utc": "2026-10-23T01:00:00Z",
+            "local": "2026-10-23T08:00:00+07:00"
+          }
+        },
+        "coordinates": null,
+        "summary": {
+          "min": 18.44,
+          "q02": 18.6952,
+          "q25": 21.247500000000002,
+          "median": 22.705,
+          "q75": 23.56,
+          "q98": 25.6046,
+          "max": 25.62,
+          "avg": 22.47666666666667,
+          "sd": 2.8019508510015925
+        },
+        "coverage": {
+          "expectedCount": 1,
+          "expectedInterval": "01:00:00",
+          "observedCount": 12,
+          "observedInterval": "12:00:00",
+          "percentComplete": 1200.0,
+          "percentCoverage": 1200.0,
+          "datetimeFrom": {
+            "utc": "2026-10-22T23:05:00Z",
+            "local": "2026-10-23T06:05:00+07:00"
+          },
+          "datetimeTo": {
+            "utc": "2026-10-23T01:00:00Z",
+            "local": "2026-10-23T08:00:00+07:00"
+          }
+        }
+      }
+    },
+    {
+      "sensor_id": 13502153,
+      "location_id": 4946812,
+      "parameter_name": "pm10",
+      "captured_at": "2026-10-24T08:36:20.518128Z",
+      "source_url": "https://api.openaq.org/v3/sensors/13502153/hours",
+      "provider": {
+        "id": 67,
+        "name": "Hanoi Air Quality Monitoring Network"
+      },
+      "licenses": null,
+      "row": {
+        "value": 39.7,
+        "flagInfo": {
+          "hasFlags": false
+        },
+        "parameter": {
+          "id": 1,
+          "name": "pm10",
+          "units": "µg/m³",
+          "displayName": null
+        },
+        "period": {
+          "label": "1hour",
+          "interval": "01:00:00",
+          "datetimeFrom": {
+            "utc": "2026-10-23T00:00:00Z",
+            "local": "2026-10-23T07:00:00+07:00"
+          },
+          "datetimeTo": {
+            "utc": "2026-10-23T01:00:00Z",
+            "local": "2026-10-23T08:00:00+07:00"
+          }
+        },
+        "coordinates": null,
+        "summary": {
+          "min": 33.49,
+          "q02": 33.908,
+          "q25": 36.495,
+          "median": 40.22,
+          "q75": 42.6725,
+          "q98": 43.7686,
+          "max": 43.85,
+          "avg": 39.74583333333334,
+          "sd": 1.5021635190934572
+        },
+        "coverage": {
+          "expectedCount": 1,
+          "expectedInterval": "01:00:00",
+          "observedCount": 12,
+          "observedInterval": "12:00:00",
+          "percentComplete": 1200.0,
+          "percentCoverage": 1200.0,
+          "datetimeFrom": {
+            "utc": "2026-10-22T23:05:00Z",
+            "local": "2026-10-23T06:05:00+07:00"
+          },
+          "datetimeTo": {
+            "utc": "2026-10-23T01:00:00Z",
+            "local": "2026-10-23T08:00:00+07:00"
+          }
+        }
+      }
+    }
+  ]
+}

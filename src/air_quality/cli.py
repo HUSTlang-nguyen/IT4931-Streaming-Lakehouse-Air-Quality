@@ -20,6 +20,8 @@ from air_quality.collector.service import Collector, atomic_json, replay_archive
 from air_quality.collector.state import StateStore
 from air_quality.config.settings import SENSORS, Settings
 from air_quality.contracts.events import iso_utc, time_windows, utc_datetime
+from air_quality.observability.coverage import jsonl_events, profile_events
+from air_quality.observability.evidence import evidence_context
 
 
 def parser() -> argparse.ArgumentParser:
@@ -40,6 +42,11 @@ def parser() -> argparse.ArgumentParser:
     replay = commands.add_parser("replay")
     replay.add_argument("--raw-dir", type=Path, default=Path("data/raw"))
     replay.add_argument("--topic", default="air-quality.replay.demo")
+    profile = commands.add_parser("profile", help="Thống kê nguồn JSONL offline, không gọi API")
+    profile.add_argument("--input", type=Path, required=True)
+    profile.add_argument("--start", type=utc_datetime, required=True)
+    profile.add_argument("--end", type=utc_datetime, required=True)
+    profile.add_argument("--output", type=Path, default=Path("artifacts/reports/source-coverage.json"))
     return root
 
 
@@ -115,6 +122,12 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.reconfigure(encoding="utf-8")
     args = parser().parse_args(argv)
     try:
+        if args.command == "profile":
+            report = profile_events(jsonl_events(args.input), args.start, args.end)
+            report["provenance"] = evidence_context(args.input)
+            atomic_json(args.output, report)
+            print(json.dumps({"output": str(args.output), "unique_records": report["unique_records"]}))
+            return 0
         settings = Settings.from_env(args.env_file)
         if args.command == "replay":
             configured = replace(settings, ingest_mode="replay", topic=args.topic)

@@ -2,7 +2,7 @@
 
 Đồ án Python/PySpark giám sát PM2.5, PM10 tại ĐHBK và Công viên Nhân Chính, Hà Nội; dự kiến bổ sung dự báo PM2.5 trước một giờ.
 
-**Trạng thái: đã có Collector Python và kiểm chứng OpenAQ; stack Lakehouse/ML chưa triển khai xong.** Unit tests và hợp đồng hourly bốn sensor đã chạy; lịch sử 180 ngày đang được tải có checkpoint. Không coi JSONL là bằng chứng Kafka/Iceberg/dashboard.
+**Trạng thái: đã có Collector Python và kiểm chứng OpenAQ; stack Lakehouse/ML chưa triển khai xong.** Unit tests và hợp đồng hourly bốn sensor đã chạy; đã tải/profile 180 ngày với 202.041 bản ghi nguồn raw/hourly duy nhất, có checkpoint. Không coi JSONL là bằng chứng Kafka/Iceberg/dashboard.
 
 ## Bắt đầu với Goal
 

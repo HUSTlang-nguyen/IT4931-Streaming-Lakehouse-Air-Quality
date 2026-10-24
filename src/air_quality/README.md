@@ -1,6 +1,6 @@
 # Package air_quality
 
-Chỉ có package và docstring; chưa có chức năng chạy. Dùng layout `src` để tách mã thư viện khỏi script/lab.
+Collector/envelope/config và source profiler đã có code và kiểm chứng. Processing/forecasting còn scaffold; chưa có bảng Spark/ML chạy. Dùng layout `src` để tách mã thư viện khỏi script/lab.
 
 | Package | Trách nhiệm |
 |---|---|
@@ -11,4 +11,4 @@ Chỉ có package và docstring; chưa có chức năng chạy. Dùng layout `sr
 | [forecasting](forecasting/README.md) | Dự báo PM2.5 |
 | [observability](observability/README.md) | Quan sát vận hành |
 
-Logic biến đổi nên kiểm thử độc lập với API/Kafka/storage I/O. Hàm nghiệp vụ có type hints, docstring tiếng Việt; tên module/hàm bằng tiếng Anh. Chưa export API hoặc CLI giả.
+Logic biến đổi kiểm thử độc lập với API/Kafka/storage I/O. Hàm nghiệp vụ có type hints, docstring tiếng Việt; tên module/hàm tiếng Anh. [CLI](cli.py) hỗ trợ inspect/backfill/live/replay/profile; stack và ML sẽ bổ sung khi module có implementation thật.
