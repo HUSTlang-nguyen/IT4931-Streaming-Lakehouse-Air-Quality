@@ -9,6 +9,8 @@ import json
 import os
 import io
 import zipfile
+import re
+from uuid import UUID
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -216,6 +218,33 @@ def import_native(env_file: Path, archive: Path) -> dict:
         client.close()
 
 
+def chart_uuids(client: SupersetClient, chart_ids: list[int]) -> dict[int, str]:
+    """Lấy UUID từ native export vì REST chart GET4.1.2 không trả field này.
+
+    Native importer cần meta.uuid trong mỗi layout node để ánh xạ chartId. Nếu
+    thiếu, import vẫn HTTP200 nhưng tự thêm một node nữa cho mỗi chart. Chỉ đọc
+    hai trường format export đã biết (filename ID / UUID top-level), không parse
+    YAML tùy ý hay ghi ZIP ra filesystem.
+    """
+    response = client.http.get("/api/v1/chart/export/", params={"q": "!(" + ",".join(map(str, chart_ids)) + ")"})
+    response.raise_for_status()
+    archive = zipfile.ZipFile(io.BytesIO(response.content))
+    result = {}
+    for entry in archive.infolist():
+        parts = PurePosixPath(entry.filename)
+        match = re.search(r"_(\d+)\.yaml$", parts.name)
+        if parts.parent.name != "charts" or not match:
+            continue
+        identifier = int(match[1])
+        raw = archive.read(entry).decode("utf-8")
+        field = re.search(r"^uuid:\s*([0-9a-fA-F-]+)\s*$", raw, re.MULTILINE)
+        if identifier in chart_ids and field:
+            result[identifier] = str(UUID(field[1]))
+    if set(result) != set(chart_ids):
+        raise ValueError("Native chart export thiếu UUID; chưa ghi layout không tái tạo được")
+    return result
+
+
 def provision(env_file: Path) -> dict:
     """Tạo/update database→datasets→charts→layout; export spec không chứa credentials."""
     spec = dashboard_spec()
@@ -275,6 +304,7 @@ def provision(env_file: Path) -> dict:
             else:
                 client.request("PUT", f"/api/v1/chart/{saved['id']}", json=payload)
             chart_ids.append(saved["id"])
+        identities = chart_uuids(client, chart_ids)
         layout: dict = {"DASHBOARD_VERSION_KEY": "v2", "ROOT_ID": {"id": "ROOT_ID", "type": "ROOT", "children": ["GRID_ID"]},
                         "GRID_ID": {"id": "GRID_ID", "type": "GRID", "children": ["SOURCE-NOTE"], "parents": ["ROOT_ID"]},
                         "HEADER_ID": {"id": "HEADER_ID", "type": "HEADER", "meta": {"text": spec["title"]}}}
@@ -290,7 +320,7 @@ def provision(env_file: Path) -> dict:
             layout[row_id]["children"].append(chart_key)
             layout[chart_key] = {"id": chart_key, "type": "CHART", "children": [], "parents": ["ROOT_ID", "GRID_ID", row_id],
                                  "meta": {"chartId": chart_id, "width": 6 if index < 4 else 12, "height": 55,
-                                          "sliceName": spec["charts"][index]["name"]}}
+                                          "sliceName": spec["charts"][index]["name"], "uuid": identities[chart_id]}}
         client.request("PUT", f"/api/v1/dashboard/{dashboard_id}", json={"position_json": json.dumps(layout),
                        "json_metadata": json.dumps({"refresh_frequency": 60, "color_scheme": "supersetColors"})})
         exported = export_native(client, dashboard_id, ROOT / "dashboards/export")
