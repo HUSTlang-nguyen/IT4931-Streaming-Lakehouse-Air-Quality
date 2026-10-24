@@ -1,0 +1,17 @@
+{
+  "namespace": "replay_verified_20261024",
+  "topic": "air-quality.replay.verified-20261024",
+  "source_archive_events": 168,
+  "counts": {
+    "bronze": 168,
+    "silver": 168,
+    "hourly": 672
+  },
+  "original_ingested_at_preserved": 168,
+  "scope": "real public hourly source replay, not live; separate Kafka topic/Iceberg namespace/checkpoint",
+  "provenance": {
+    "generated_at": "2026-10-24T10:14:14.483178Z",
+    "code_revision": "c5ab9fae82621fcf54f533b79e90fbb77c08fe66",
+    "working_tree_dirty": true
+  }
+}

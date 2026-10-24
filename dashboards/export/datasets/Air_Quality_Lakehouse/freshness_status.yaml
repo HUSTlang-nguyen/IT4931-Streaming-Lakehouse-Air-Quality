@@ -1,0 +1,165 @@
+table_name: freshness_status
+main_dttm_col: last_measurement_at
+description: null
+default_endpoint: null
+offset: 0
+cache_timeout: null
+catalog: iceberg
+schema: live
+sql: "SELECT *, format_datetime(last_measurement_at AT TIME ZONE 'UTC' AT TIME ZONE\
+  \ 'Asia/Ho_Chi_Minh',\n        'yyyy-MM-dd HH:mm') AS last_measurement_local, date_diff('minute',\
+  \ last_measurement_at,\n        CAST(current_timestamp AT TIME ZONE 'UTC' AS timestamp))\
+  \ AS age_minutes\n        FROM iceberg.live.freshness"
+params: null
+template_params: null
+filter_select_enabled: true
+fetch_values_predicate: null
+extra: null
+normalize_columns: false
+always_filter_main_dttm: false
+uuid: 7cc6a20b-e40d-4923-b5c7-61f95bee717e
+metrics:
+- metric_name: count
+  verbose_name: COUNT(*)
+  metric_type: count
+  expression: COUNT(*)
+  description: null
+  d3format: null
+  currency: null
+  extra: null
+  warning_text: null
+columns:
+- column_name: last_measurement_local
+  verbose_name: "S\u1ED1 \u0111o cu\u1ED1i (gi\u1EDD VN)"
+  is_dttm: false
+  is_active: true
+  type: VARCHAR
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: last_measurement_at
+  verbose_name: null
+  is_dttm: true
+  is_active: true
+  type: TIMESTAMP(6) WITH TIME ZONE
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: last_ingested_at
+  verbose_name: null
+  is_dttm: true
+  is_active: true
+  type: TIMESTAMP(6) WITH TIME ZONE
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: age_minutes
+  verbose_name: "\u0110\u1ED9 tr\u1EC5 (ph\xFAt)"
+  is_dttm: false
+  is_active: true
+  type: BIGINT
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: parameter_name
+  verbose_name: "Ch\u1EC9 s\u1ED1"
+  is_dttm: false
+  is_active: true
+  type: VARCHAR
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: series_kind
+  verbose_name: "Chu\u1ED7i ngu\u1ED3n"
+  is_dttm: false
+  is_active: true
+  type: VARCHAR
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: records
+  verbose_name: "B\u1EA3n ghi"
+  is_dttm: false
+  is_active: true
+  type: BIGINT
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: station_name
+  verbose_name: "Tr\u1EA1m"
+  is_dttm: false
+  is_active: true
+  type: VARCHAR
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: valid_records
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: BIGINT
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: location_id
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: INTEGER
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: sensor_id
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: INTEGER
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+version: 1.0.0
+database_uuid: b2722eec-10d6-4f1f-aeca-c2824e616355

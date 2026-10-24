@@ -25,8 +25,8 @@ from air_quality.observability.evidence import evidence_context
 
 
 def parser() -> argparse.ArgumentParser:
-    """Chỉ công bố lệnh thực thi đã có; thao tác stack/ML sẽ bổ sung cùng module."""
-    root = argparse.ArgumentParser(description="Air Quality Lakehouse — Collector OpenAQ")
+    """Công bố Collector, stack, Spark/ML và kiểm chứng qua cùng entrypoint."""
+    root = argparse.ArgumentParser(description="Air Quality Streaming Lakehouse — OpenAQ / Spark / ML")
     root.add_argument("--env-file", type=Path, default=Path(".env"))
     commands = root.add_subparsers(dest="command", required=True)
     for name in ("inspect", "backfill", "live"):
@@ -47,6 +47,32 @@ def parser() -> argparse.ArgumentParser:
     profile.add_argument("--start", type=utc_datetime, required=True)
     profile.add_argument("--end", type=utc_datetime, required=True)
     profile.add_argument("--output", type=Path, default=Path("artifacts/reports/source-coverage.json"))
+    for name in ("start", "stop", "status"):
+        operation = commands.add_parser(name)
+        if name == "start":
+            operation.add_argument("--services", nargs="+", choices=["kafka", "minio", "catalog", "postgres", "trino", "superset", "collector", "processor"])
+            operation.add_argument("--no-build", action="store_true")
+    query = commands.add_parser("query", help="SQL qua Trino của stack local")
+    query.add_argument("sql")
+    drain = commands.add_parser("drain", help="Gửi bản thu JSONL thật qua Kafka, giữ mode backfill/live")
+    drain.add_argument("--input", type=Path, required=True)
+    drain.add_argument("--run-name", default="source-backfill")
+    drain.add_argument("--batch-size", type=int, default=1000)
+    commands.add_parser("smoke")
+    commands.add_parser("dashboard")
+    commands.add_parser("benchmark")
+    for action in ("train", "predict"):
+        ml = commands.add_parser(action)
+        ml.add_argument("--namespace", default="live")
+    tests = commands.add_parser("test")
+    tests.add_argument("--integration", action="store_true")
+    tests.add_argument("--live", action="store_true")
+    process = commands.add_parser("process")
+    process.add_argument("--namespace", default="live")
+    process.add_argument("--topic", default="air-quality.live")
+    process.add_argument("--checkpoint", default="checkpoints/spark/live")
+    process.add_argument("--max-offsets", type=int, default=20000)
+    process.add_argument("--continuous", action="store_true")
     return root
 
 
@@ -122,6 +148,35 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.reconfigure(encoding="utf-8")
     args = parser().parse_args(argv)
     try:
+        if args.command == "benchmark":
+            from air_quality.observability.benchmark import run
+            print(json.dumps(run(args.env_file)))
+            return 0
+        if args.command == "dashboard":
+            from air_quality.dashboard import provision
+            print(json.dumps(provision(args.env_file), ensure_ascii=False))
+            return 0
+        if args.command in {"start", "stop", "status", "query", "smoke", "process", "test", "train", "predict"}:
+            from air_quality import operations
+            if args.command == "start":
+                operations.start(args.env_file, args.services, not args.no_build)
+            elif args.command == "stop":
+                operations.stop(args.env_file)
+            elif args.command == "status":
+                operations.status(args.env_file)
+            elif args.command == "query":
+                print(json.dumps(operations.query_trino(args.sql), ensure_ascii=False))
+            elif args.command == "test":
+                operations.run_tests(args.env_file, args.integration, args.live)
+            else:
+                job_args = []
+                if args.command == "process":
+                    job_args = ["--namespace", args.namespace, "--topic", args.topic, "--checkpoint", args.checkpoint,
+                                "--max-offsets", str(args.max_offsets), *(["--continuous"] if args.continuous else [])]
+                elif args.command in {"train", "predict"}:
+                    job_args = ["--namespace", args.namespace]
+                operations.run_spark_job(args.env_file, "ingest" if args.command == "process" else args.command, job_args)
+            return 0
         if args.command == "profile":
             report = profile_events(jsonl_events(args.input), args.start, args.end)
             report["provenance"] = evidence_context(args.input)
@@ -129,6 +184,15 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps({"output": str(args.output), "unique_records": report["unique_records"]}))
             return 0
         settings = Settings.from_env(args.env_file)
+        if args.command == "drain":
+            from air_quality.collector.archive import drain_jsonl
+            state = StateStore(settings.state_dir / "collector.sqlite")
+            try:
+                print(json.dumps(drain_jsonl(args.input, KafkaPublisher(settings.bootstrap_servers, settings.topic),
+                                             state, settings.state_dir, args.run_name, args.batch_size)))
+            finally:
+                state.close()
+            return 0
         if args.command == "replay":
             configured = replace(settings, ingest_mode="replay", topic=args.topic)
             count = replay_archives(args.raw_dir, KafkaPublisher(configured.bootstrap_servers, configured.topic))

@@ -1,0 +1,16 @@
+database_name: Air Quality Lakehouse
+sqlalchemy_uri: trino://airquality@trino:8080/iceberg/live
+cache_timeout: null
+expose_in_sqllab: true
+allow_run_async: false
+allow_ctas: false
+allow_cvas: false
+allow_dml: false
+allow_file_upload: false
+extra:
+  metadata_params: {}
+  engine_params: {}
+  metadata_cache_timeout: {}
+  schemas_allowed_for_file_upload: []
+uuid: b2722eec-10d6-4f1f-aeca-c2824e616355
+version: 1.0.0

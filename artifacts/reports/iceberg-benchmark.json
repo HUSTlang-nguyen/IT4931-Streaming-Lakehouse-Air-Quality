@@ -1,0 +1,848 @@
+{
+  "prepared": {
+    "namespace": "experiment_20261024_095728",
+    "table": "lake.experiment_20261024_095728.observations",
+    "source_table": "lake.live.silver",
+    "source_snapshot": 1814067691888727873,
+    "source_count": 202537,
+    "dataset": "exact real-source copy, no row replication; four appends intentionally create small files",
+    "filter": "2026-07-01 <= period_end < 2026-08-01 UTC",
+    "before": {
+      "files": 28,
+      "bytes": 10515307,
+      "records": 202537,
+      "selected_files_july": 4,
+      "pruned_files": 24,
+      "filtered_result": [
+        {
+          "sensor_id": 13502151,
+          "n": 8190,
+          "total": 186804.79
+        },
+        {
+          "sensor_id": 13502152,
+          "n": 8014,
+          "total": 335306.57
+        },
+        {
+          "sensor_id": 13502153,
+          "n": 8165,
+          "total": 376285.06
+        },
+        {
+          "sensor_id": 13502154,
+          "n": 7543,
+          "total": 195341.02
+        }
+      ],
+      "spark_seconds_3_runs_after_warmup": [
+        0.08124338500056183,
+        0.06033972800014453,
+        0.10804730500058213
+      ],
+      "spark_plan": "AdaptiveSparkPlan isFinalPlan=true\n+- == Final Plan ==\n   *(2) HashAggregate(keys=[sensor_id#2545], functions=[count(1), sum(cast(value#2551 as decimal(25,8)))], output=[sensor_id#2545, n#2621L, total#2623])\n   +- AQEShuffleRead coalesced\n      +- ShuffleQueryStage 0\n         +- Exchange hashpartitioning(sensor_id#2545, 2), ENSURE_REQUIREMENTS, [plan_id=439]\n            +- *(1) HashAggregate(keys=[sensor_id#2545], functions=[partial_count(1), partial_sum(cast(value#2551 as decimal(25,8)))], output=[sensor_id#2545, count#2633L, sum#2634, isEmpty#2635])\n               +- *(1) Project [sensor_id#2545, value#2551]\n                  +- *(1) ColumnarToRow\n                     +- BatchScan lake.experiment_20261024_095728.observations[sensor_id#2545, period_end#2550, value#2551] lake.experiment_20261024_095728.observations (branch=null) [filters=period_end IS NOT NULL, period_end >= 1782864000000000, period_end < 1785542400000000, groupedBy=] RuntimeFilters: []\n+- == Initial Plan ==\n   HashAggregate(keys=[sensor_id#2545], functions=[count(1), sum(cast(value#2551 as decimal(25,8)))], output=[sensor_id#2545, n#2621L, total#2623])\n   +- Exchange hashpartitioning(sensor_id#2545, 2), ENSURE_REQUIREMENTS, [plan_id=422]\n      +- HashAggregate(keys=[sensor_id#2545], functions=[partial_count(1), partial_sum(cast(value#2551 as decimal(25,8)))], output=[sensor_id#2545, count#2633L, sum#2634, isEmpty#2635])\n         +- Project [sensor_id#2545, value#2551]\n            +- BatchScan lake.experiment_20261024_095728.observations[sensor_id#2545, period_end#2550, value#2551] lake.experiment_20261024_095728.observations (branch=null) [filters=period_end IS NOT NULL, period_end >= 1782864000000000, period_end < 1785542400000000, groupedBy=] RuntimeFilters: []\n",
+      "snapshot": 6771701738734041956
+    },
+    "provenance": {
+      "generated_at": "2026-10-24T09:57:51.975964Z",
+      "code_revision": "c5ab9fae82621fcf54f533b79e90fbb77c08fe66",
+      "working_tree_dirty": true
+    }
+  },
+  "compacted": {
+    "namespace": "experiment_20261024_095728",
+    "before": {
+      "files": 28,
+      "bytes": 10515307,
+      "records": 202537,
+      "selected_files_july": 4,
+      "pruned_files": 24,
+      "filtered_result": [
+        {
+          "sensor_id": 13502151,
+          "n": 8190,
+          "total": 186804.79
+        },
+        {
+          "sensor_id": 13502152,
+          "n": 8014,
+          "total": 335306.57
+        },
+        {
+          "sensor_id": 13502153,
+          "n": 8165,
+          "total": 376285.06
+        },
+        {
+          "sensor_id": 13502154,
+          "n": 7543,
+          "total": 195341.02
+        }
+      ],
+      "spark_seconds_3_runs_after_warmup": [
+        0.09845985399988422,
+        0.09016344500014384,
+        0.09211148699978366
+      ],
+      "spark_plan": "AdaptiveSparkPlan isFinalPlan=true\n+- == Final Plan ==\n   *(2) HashAggregate(keys=[sensor_id#94], functions=[count(1), sum(cast(value#100 as decimal(25,8)))], output=[sensor_id#94, n#170L, total#172])\n   +- AQEShuffleRead coalesced\n      +- ShuffleQueryStage 0\n         +- Exchange hashpartitioning(sensor_id#94, 2), ENSURE_REQUIREMENTS, [plan_id=170]\n            +- *(1) HashAggregate(keys=[sensor_id#94], functions=[partial_count(1), partial_sum(cast(value#100 as decimal(25,8)))], output=[sensor_id#94, count#182L, sum#183, isEmpty#184])\n               +- *(1) Project [sensor_id#94, value#100]\n                  +- *(1) ColumnarToRow\n                     +- BatchScan lake.experiment_20261024_095728.observations[sensor_id#94, period_end#99, value#100] lake.experiment_20261024_095728.observations (branch=null) [filters=period_end IS NOT NULL, period_end >= 1782864000000000, period_end < 1785542400000000, groupedBy=] RuntimeFilters: []\n+- == Initial Plan ==\n   HashAggregate(keys=[sensor_id#94], functions=[count(1), sum(cast(value#100 as decimal(25,8)))], output=[sensor_id#94, n#170L, total#172])\n   +- Exchange hashpartitioning(sensor_id#94, 2), ENSURE_REQUIREMENTS, [plan_id=153]\n      +- HashAggregate(keys=[sensor_id#94], functions=[partial_count(1), partial_sum(cast(value#100 as decimal(25,8)))], output=[sensor_id#94, count#182L, sum#183, isEmpty#184])\n         +- Project [sensor_id#94, value#100]\n            +- BatchScan lake.experiment_20261024_095728.observations[sensor_id#94, period_end#99, value#100] lake.experiment_20261024_095728.observations (branch=null) [filters=period_end IS NOT NULL, period_end >= 1782864000000000, period_end < 1785542400000000, groupedBy=] RuntimeFilters: []\n",
+      "snapshot": 6771701738734041956
+    },
+    "after": {
+      "files": 7,
+      "bytes": 9327132,
+      "records": 202537,
+      "selected_files_july": 1,
+      "pruned_files": 6,
+      "filtered_result": [
+        {
+          "sensor_id": 13502151,
+          "n": 8190,
+          "total": 186804.79
+        },
+        {
+          "sensor_id": 13502152,
+          "n": 8014,
+          "total": 335306.57
+        },
+        {
+          "sensor_id": 13502153,
+          "n": 8165,
+          "total": 376285.06
+        },
+        {
+          "sensor_id": 13502154,
+          "n": 7543,
+          "total": 195341.02
+        }
+      ],
+      "spark_seconds_3_runs_after_warmup": [
+        0.04321635399992374,
+        0.06111848199998349,
+        0.042974184999366116
+      ],
+      "spark_plan": "AdaptiveSparkPlan isFinalPlan=true\n+- == Final Plan ==\n   *(2) HashAggregate(keys=[sensor_id#1039], functions=[count(1), sum(cast(value#1045 as decimal(25,8)))], output=[sensor_id#1039, n#1115L, total#1117])\n   +- AQEShuffleRead coalesced\n      +- ShuffleQueryStage 0\n         +- Exchange hashpartitioning(sensor_id#1039, 2), ENSURE_REQUIREMENTS, [plan_id=466]\n            +- *(1) HashAggregate(keys=[sensor_id#1039], functions=[partial_count(1), partial_sum(cast(value#1045 as decimal(25,8)))], output=[sensor_id#1039, count#1127L, sum#1128, isEmpty#1129])\n               +- *(1) Project [sensor_id#1039, value#1045]\n                  +- *(1) ColumnarToRow\n                     +- BatchScan lake.experiment_20261024_095728.observations[sensor_id#1039, period_end#1044, value#1045] lake.experiment_20261024_095728.observations (branch=null) [filters=period_end IS NOT NULL, period_end >= 1782864000000000, period_end < 1785542400000000, groupedBy=] RuntimeFilters: []\n+- == Initial Plan ==\n   HashAggregate(keys=[sensor_id#1039], functions=[count(1), sum(cast(value#1045 as decimal(25,8)))], output=[sensor_id#1039, n#1115L, total#1117])\n   +- Exchange hashpartitioning(sensor_id#1039, 2), ENSURE_REQUIREMENTS, [plan_id=449]\n      +- HashAggregate(keys=[sensor_id#1039], functions=[partial_count(1), partial_sum(cast(value#1045 as decimal(25,8)))], output=[sensor_id#1039, count#1127L, sum#1128, isEmpty#1129])\n         +- Project [sensor_id#1039, value#1045]\n            +- BatchScan lake.experiment_20261024_095728.observations[sensor_id#1039, period_end#1044, value#1045] lake.experiment_20261024_095728.observations (branch=null) [filters=period_end IS NOT NULL, period_end >= 1782864000000000, period_end < 1785542400000000, groupedBy=] RuntimeFilters: []\n",
+      "snapshot": 3857799040961249093
+    },
+    "rewrite_result": [
+      {
+        "rewritten_data_files_count": 28,
+        "added_data_files_count": 7,
+        "rewritten_bytes_count": 10515307,
+        "failed_data_files_count": 0
+      }
+    ],
+    "time_travel_count": 202537,
+    "exact_row_differences": 0,
+    "content_equal": true,
+    "provenance": {
+      "generated_at": "2026-10-24T09:58:33.287128Z",
+      "code_revision": "c5ab9fae82621fcf54f533b79e90fbb77c08fe66",
+      "working_tree_dirty": true
+    }
+  },
+  "trino_before": {
+    "sql": "SELECT sensor_id,count(*) n,CAST(sum(CAST(value AS DECIMAL(25,8))) AS DOUBLE) total FROM iceberg.experiment_20261024_095728.observations WHERE period_end>=TIMESTAMP '2026-07-01' AND period_end<TIMESTAMP '2026-08-01' GROUP BY sensor_id ORDER BY sensor_id",
+    "result": [
+      [
+        13502151,
+        8190,
+        186804.79
+      ],
+      [
+        13502152,
+        8014,
+        335306.57
+      ],
+      [
+        13502153,
+        8165,
+        376285.06
+      ],
+      [
+        13502154,
+        7543,
+        195341.02
+      ]
+    ],
+    "runs": [
+      {
+        "wall_seconds": 2.1685545999998794,
+        "stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 30,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 30,
+          "planningTimeMillis": 38,
+          "analysisTimeMillis": 14,
+          "cpuTimeMillis": 40,
+          "wallTimeMillis": 46,
+          "queuedTimeMillis": 0,
+          "elapsedTimeMillis": 111,
+          "finishingTimeMillis": 1,
+          "physicalInputTimeMillis": 0,
+          "processedRows": 31912,
+          "processedBytes": 1651876,
+          "physicalInputBytes": 1651876,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 1103,
+          "peakMemoryBytes": 1884441,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 1,
+            "processedRows": 4,
+            "processedBytes": 153,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 9,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 9,
+                "cpuTimeMillis": 3,
+                "wallTimeMillis": 3,
+                "processedRows": 4,
+                "processedBytes": 226,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 16,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 16,
+                    "cpuTimeMillis": 5,
+                    "wallTimeMillis": 11,
+                    "processedRows": 16,
+                    "processedBytes": 724,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 4,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 4,
+                        "cpuTimeMillis": 31,
+                        "wallTimeMillis": 31,
+                        "processedRows": 31912,
+                        "processedBytes": 1651876,
+                        "physicalInputBytes": 1651876,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_id": "20261024_095757_00062_g7xx7"
+      },
+      {
+        "wall_seconds": 2.177819399999862,
+        "stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 30,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 30,
+          "planningTimeMillis": 37,
+          "analysisTimeMillis": 16,
+          "cpuTimeMillis": 36,
+          "wallTimeMillis": 37,
+          "queuedTimeMillis": 0,
+          "elapsedTimeMillis": 116,
+          "finishingTimeMillis": 11,
+          "physicalInputTimeMillis": 1,
+          "processedRows": 31912,
+          "processedBytes": 1651876,
+          "physicalInputBytes": 1651876,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 1103,
+          "peakMemoryBytes": 2372321,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 1,
+            "processedRows": 4,
+            "processedBytes": 153,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 9,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 9,
+                "cpuTimeMillis": 3,
+                "wallTimeMillis": 3,
+                "processedRows": 4,
+                "processedBytes": 226,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 16,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 16,
+                    "cpuTimeMillis": 5,
+                    "wallTimeMillis": 5,
+                    "processedRows": 16,
+                    "processedBytes": 724,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 4,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 4,
+                        "cpuTimeMillis": 27,
+                        "wallTimeMillis": 28,
+                        "processedRows": 31912,
+                        "processedBytes": 1651876,
+                        "physicalInputBytes": 1651876,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_id": "20261024_095759_00063_g7xx7"
+      },
+      {
+        "wall_seconds": 2.2185978999996223,
+        "stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 30,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 30,
+          "planningTimeMillis": 42,
+          "analysisTimeMillis": 17,
+          "cpuTimeMillis": 45,
+          "wallTimeMillis": 82,
+          "queuedTimeMillis": 0,
+          "elapsedTimeMillis": 144,
+          "finishingTimeMillis": 3,
+          "physicalInputTimeMillis": 1,
+          "processedRows": 31912,
+          "processedBytes": 1651876,
+          "physicalInputBytes": 1651876,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 1103,
+          "peakMemoryBytes": 3120,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 1,
+            "processedRows": 4,
+            "processedBytes": 153,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 9,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 9,
+                "cpuTimeMillis": 3,
+                "wallTimeMillis": 3,
+                "processedRows": 4,
+                "processedBytes": 226,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 16,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 16,
+                    "cpuTimeMillis": 7,
+                    "wallTimeMillis": 8,
+                    "processedRows": 16,
+                    "processedBytes": 724,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 4,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 4,
+                        "cpuTimeMillis": 34,
+                        "wallTimeMillis": 70,
+                        "processedRows": 31912,
+                        "processedBytes": 1651876,
+                        "physicalInputBytes": 1651876,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_id": "20261024_095802_00064_g7xx7"
+      }
+    ],
+    "plan": [
+      [
+        "Trino version: 476\nFragment 0 [SINGLE]\n    Output layout: [sensor_id, count, expr_0]\n    Output partitioning: SINGLE []\n    Output[columnNames = [sensor_id, n, total]]\n    │   Layout: [sensor_id:integer, count:bigint, expr_0:double]\n    │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}\n    │   n := count\n    │   total := expr_0\n    └─ RemoteMerge[sourceFragmentIds = [1]]\n           Layout: [sensor_id:integer, count:bigint, expr_0:double]\n\nFragment 1 [ROUND_ROBIN]\n    Output layout: [sensor_id, count, expr_0]\n    Output partitioning: SINGLE []\n    LocalMerge[orderBy = [sensor_id ASC NULLS LAST]]\n    │   Layout: [sensor_id:integer, count:bigint, expr_0:double]\n    │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}\n    └─ PartialSort[orderBy = [sensor_id ASC NULLS LAST]]\n       │   Layout: [sensor_id:integer, count:bigint, expr_0:double]\n       └─ RemoteSource[sourceFragmentIds = [2]]\n              Layout: [sensor_id:integer, count:bigint, expr_0:double]\n\nFragment 2 [HASH]\n    Output layout: [sensor_id, count, expr_0]\n    Output partitioning: ROUND_ROBIN []\n    Project[]\n    │   Layout: [sensor_id:integer, count:bigint, expr_0:double]\n    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}\n    │   expr_0 := CAST(sum AS double)\n    └─ Aggregate[type = FINAL, keys = [sensor_id]]\n       │   Layout: [sensor_id:integer, count:bigint, sum:decimal(38,8)]\n       │   Estimates: {rows: ? (?), cpu: 2.10M, memory: ?, network: 0B}\n       │   count := count(count_1)\n       │   sum := sum(sum_2)\n       └─ LocalExchange[partitioning = HASH, arguments = [sensor_id::integer]]\n          │   Layout: [sensor_id:integer, count_1:bigint, sum_2:varbinary]\n          │   Estimates: {rows: 31912 (2.10MB), cpu: 2.10M, memory: 0B, network: 0B}\n          └─ RemoteSource[sourceFragmentIds = [3]]\n                 Layout: [sensor_id:integer, count_1:bigint, sum_2:varbinary]\n\nFragment 3 [SOURCE]\n    Output layout: [sensor_id, count_1, sum_2]\n    Output partitioning: HASH [sensor_id]\n    Aggregate[type = PARTIAL, keys = [sensor_id]]\n    │   Layout: [sensor_id:integer, count_1:bigint, sum_2:varbinary]\n    │   Estimates: {rows: 31912 (2.10MB), cpu: ?, memory: ?, network: ?}\n    │   count_1 := count(*)\n    │   sum_2 := sum(expr)\n    └─ ScanProject[table = iceberg:experiment_20261024_095728.observations$data@6771701738734041956 constraint on [period_end]]\n           Layout: [expr:decimal(25,8), sensor_id:integer]\n           Estimates: {rows: 31912 (685.61kB), cpu: 436.30k, memory: 0B, network: 0B}/{rows: 31912 (685.61kB), cpu: 685.61k, memory: 0B, network: 0B}\n           expr := CAST(value AS decimal(25,8))\n           sensor_id := 2:sensor_id:integer\n           value := 8:value:double\n           7:period_end:timestamp(6) with time zone\n               :: [[2026-07-01 00:00:00.000000 UTC, 2026-08-01 00:00:00.000000 UTC)]\n\n"
+      ]
+    ]
+  },
+  "trino_after": {
+    "sql": "SELECT sensor_id,count(*) n,CAST(sum(CAST(value AS DECIMAL(25,8))) AS DOUBLE) total FROM iceberg.experiment_20261024_095728.observations WHERE period_end>=TIMESTAMP '2026-07-01' AND period_end<TIMESTAMP '2026-08-01' GROUP BY sensor_id ORDER BY sensor_id",
+    "result": [
+      [
+        13502151,
+        8190,
+        186804.79
+      ],
+      [
+        13502152,
+        8014,
+        335306.57
+      ],
+      [
+        13502153,
+        8165,
+        376285.06
+      ],
+      [
+        13502154,
+        7543,
+        195341.02
+      ]
+    ],
+    "runs": [
+      {
+        "wall_seconds": 2.2042234000000462,
+        "stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 27,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 27,
+          "planningTimeMillis": 45,
+          "analysisTimeMillis": 19,
+          "cpuTimeMillis": 19,
+          "wallTimeMillis": 20,
+          "queuedTimeMillis": 0,
+          "elapsedTimeMillis": 117,
+          "finishingTimeMillis": 1,
+          "physicalInputTimeMillis": 0,
+          "processedRows": 31912,
+          "processedBytes": 1457386,
+          "physicalInputBytes": 1457386,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 560,
+          "peakMemoryBytes": 2252,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 1,
+            "processedRows": 4,
+            "processedBytes": 153,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 9,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 9,
+                "cpuTimeMillis": 3,
+                "wallTimeMillis": 3,
+                "processedRows": 4,
+                "processedBytes": 226,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 16,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 16,
+                    "cpuTimeMillis": 4,
+                    "wallTimeMillis": 5,
+                    "processedRows": 4,
+                    "processedBytes": 181,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 1,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 1,
+                        "cpuTimeMillis": 11,
+                        "wallTimeMillis": 11,
+                        "processedRows": 31912,
+                        "processedBytes": 1457386,
+                        "physicalInputBytes": 1457386,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_id": "20261024_095838_00067_g7xx7"
+      },
+      {
+        "wall_seconds": 2.2315185999996174,
+        "stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 27,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 27,
+          "planningTimeMillis": 42,
+          "analysisTimeMillis": 60,
+          "cpuTimeMillis": 17,
+          "wallTimeMillis": 17,
+          "queuedTimeMillis": 0,
+          "elapsedTimeMillis": 161,
+          "finishingTimeMillis": 0,
+          "physicalInputTimeMillis": 0,
+          "processedRows": 31912,
+          "processedBytes": 1457386,
+          "physicalInputBytes": 1457386,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 560,
+          "peakMemoryBytes": 1563179,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 1,
+            "processedRows": 4,
+            "processedBytes": 153,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 9,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 9,
+                "cpuTimeMillis": 3,
+                "wallTimeMillis": 3,
+                "processedRows": 4,
+                "processedBytes": 226,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 16,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 16,
+                    "cpuTimeMillis": 4,
+                    "wallTimeMillis": 4,
+                    "processedRows": 4,
+                    "processedBytes": 181,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 1,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 1,
+                        "cpuTimeMillis": 9,
+                        "wallTimeMillis": 9,
+                        "processedRows": 31912,
+                        "processedBytes": 1457386,
+                        "physicalInputBytes": 1457386,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_id": "20261024_095840_00068_g7xx7"
+      },
+      {
+        "wall_seconds": 2.161195399999997,
+        "stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 27,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 27,
+          "planningTimeMillis": 34,
+          "analysisTimeMillis": 15,
+          "cpuTimeMillis": 18,
+          "wallTimeMillis": 19,
+          "queuedTimeMillis": 0,
+          "elapsedTimeMillis": 100,
+          "finishingTimeMillis": 1,
+          "physicalInputTimeMillis": 0,
+          "processedRows": 31912,
+          "processedBytes": 1457386,
+          "physicalInputBytes": 1457386,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 560,
+          "peakMemoryBytes": 1562707,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 1,
+            "processedRows": 4,
+            "processedBytes": 153,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 9,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 9,
+                "cpuTimeMillis": 3,
+                "wallTimeMillis": 4,
+                "processedRows": 4,
+                "processedBytes": 226,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 16,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 16,
+                    "cpuTimeMillis": 4,
+                    "wallTimeMillis": 4,
+                    "processedRows": 4,
+                    "processedBytes": 181,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 1,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 1,
+                        "cpuTimeMillis": 10,
+                        "wallTimeMillis": 10,
+                        "processedRows": 31912,
+                        "processedBytes": 1457386,
+                        "physicalInputBytes": 1457386,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_id": "20261024_095842_00069_g7xx7"
+      }
+    ],
+    "plan": [
+      [
+        "Trino version: 476\nFragment 0 [SINGLE]\n    Output layout: [sensor_id, count, expr_0]\n    Output partitioning: SINGLE []\n    Output[columnNames = [sensor_id, n, total]]\n    │   Layout: [sensor_id:integer, count:bigint, expr_0:double]\n    │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}\n    │   n := count\n    │   total := expr_0\n    └─ RemoteMerge[sourceFragmentIds = [1]]\n           Layout: [sensor_id:integer, count:bigint, expr_0:double]\n\nFragment 1 [ROUND_ROBIN]\n    Output layout: [sensor_id, count, expr_0]\n    Output partitioning: SINGLE []\n    LocalMerge[orderBy = [sensor_id ASC NULLS LAST]]\n    │   Layout: [sensor_id:integer, count:bigint, expr_0:double]\n    │   Estimates: {rows: ? (?), cpu: 0, memory: 0B, network: 0B}\n    └─ PartialSort[orderBy = [sensor_id ASC NULLS LAST]]\n       │   Layout: [sensor_id:integer, count:bigint, expr_0:double]\n       └─ RemoteSource[sourceFragmentIds = [2]]\n              Layout: [sensor_id:integer, count:bigint, expr_0:double]\n\nFragment 2 [HASH]\n    Output layout: [sensor_id, count, expr_0]\n    Output partitioning: ROUND_ROBIN []\n    Project[]\n    │   Layout: [sensor_id:integer, count:bigint, expr_0:double]\n    │   Estimates: {rows: ? (?), cpu: ?, memory: 0B, network: 0B}\n    │   expr_0 := CAST(sum AS double)\n    └─ Aggregate[type = FINAL, keys = [sensor_id]]\n       │   Layout: [sensor_id:integer, count:bigint, sum:decimal(38,8)]\n       │   Estimates: {rows: ? (?), cpu: 2.10M, memory: ?, network: 0B}\n       │   count := count(count_1)\n       │   sum := sum(sum_2)\n       └─ LocalExchange[partitioning = HASH, arguments = [sensor_id::integer]]\n          │   Layout: [sensor_id:integer, count_1:bigint, sum_2:varbinary]\n          │   Estimates: {rows: 31912 (2.10MB), cpu: 2.10M, memory: 0B, network: 0B}\n          └─ RemoteSource[sourceFragmentIds = [3]]\n                 Layout: [sensor_id:integer, count_1:bigint, sum_2:varbinary]\n\nFragment 3 [SOURCE]\n    Output layout: [sensor_id, count_1, sum_2]\n    Output partitioning: HASH [sensor_id]\n    Aggregate[type = PARTIAL, keys = [sensor_id]]\n    │   Layout: [sensor_id:integer, count_1:bigint, sum_2:varbinary]\n    │   Estimates: {rows: 31912 (2.10MB), cpu: ?, memory: ?, network: ?}\n    │   count_1 := count(*)\n    │   sum_2 := sum(expr)\n    └─ ScanProject[table = iceberg:experiment_20261024_095728.observations$data@3857799040961249093 constraint on [period_end]]\n           Layout: [expr:decimal(25,8), sensor_id:integer]\n           Estimates: {rows: 31912 (685.61kB), cpu: 436.30k, memory: 0B, network: 0B}/{rows: 31912 (685.61kB), cpu: 685.61k, memory: 0B, network: 0B}\n           expr := CAST(value AS decimal(25,8))\n           sensor_id := 2:sensor_id:integer\n           value := 8:value:double\n           7:period_end:timestamp(6) with time zone\n               :: [[2026-07-01 00:00:00.000000 UTC, 2026-08-01 00:00:00.000000 UTC)]\n\n"
+      ]
+    ]
+  },
+  "trino_time_travel_counts": {
+    "6771701738734041956": 202537,
+    "3857799040961249093": 202537
+  },
+  "limitations": "Small local dataset; intentionally fragmented files. Timing is measured, no general speedup claim; caches are not flushed."
+}

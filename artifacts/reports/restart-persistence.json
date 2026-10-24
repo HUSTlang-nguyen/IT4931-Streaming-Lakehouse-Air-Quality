@@ -1,0 +1,32 @@
+{
+  "before": {
+    "bronze": 214381,
+    "silver": 202537,
+    "hourly": 17316,
+    "daily": 724,
+    "freshness": 8
+  },
+  "after": {
+    "bronze": 214381,
+    "silver": 202537,
+    "hourly": 17316,
+    "daily": 724,
+    "freshness": 8
+  },
+  "equal": true,
+  "scope": "core stop/start; named volumes retained; writers stopped",
+  "provenance": {
+    "generated_at": "2026-10-24T09:49:29.090620Z",
+    "code_revision": "c5ab9fae82621fcf54f533b79e90fbb77c08fe66",
+    "working_tree_dirty": true
+  },
+  "after_processor_resume": {
+    "bronze": 214381,
+    "silver": 202537,
+    "hourly": 17316,
+    "daily": 724,
+    "freshness": 8
+  },
+  "silver_duplicate_keys": 0,
+  "checkpoint_resume_verified": true
+}

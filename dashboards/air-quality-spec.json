@@ -1,0 +1,115 @@
+{
+  "title": "Chất lượng không khí Hà Nội",
+  "slug": "air-quality-hanoi",
+  "datasets": {
+    "hourly_local": {
+      "table_name": "hourly_local",
+      "schema": "live",
+      "sql": "SELECT *, format_datetime(period_end AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh',\n        'yyyy-MM-dd HH:mm') AS local_time FROM iceberg.live.hourly"
+    },
+    "daily": {
+      "table_name": "daily",
+      "schema": "live"
+    },
+    "freshness_status": {
+      "table_name": "freshness_status",
+      "schema": "live",
+      "sql": "SELECT *, format_datetime(last_measurement_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh',\n        'yyyy-MM-dd HH:mm') AS last_measurement_local, date_diff('minute', last_measurement_at,\n        CAST(current_timestamp AT TIME ZONE 'UTC' AS timestamp)) AS age_minutes\n        FROM iceberg.live.freshness"
+    },
+    "forecast_comparison": {
+      "table_name": "forecast_comparison",
+      "schema": "live",
+      "sql": "SELECT h.sensor_id,h.station_name,h.period_end AS target_time,\n        format_datetime(h.period_end AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh',\n        'yyyy-MM-dd HH:mm') AS local_time,u.curve,u.chart_value\n        FROM iceberg.live.hourly h LEFT JOIN iceberg.live.forecast_actual f\n          ON h.sensor_id=f.sensor_id AND h.period_end=f.target_time AND f.mode='backtest'\n          AND f.issued_at=(SELECT max(issued_at) FROM iceberg.live.forecast_actual WHERE mode='backtest')\n        CROSS JOIN UNNEST(ARRAY['Thực tế','Random Forest','Persistence'],\n          ARRAY[h.value,f.predicted_value,f.baseline_value]) AS u(curve,chart_value)\n        WHERE h.parameter_name='pm25'"
+    },
+    "operational_forecasts": {
+      "table_name": "operational_forecasts",
+      "schema": "live",
+      "sql": "SELECT *, format_datetime(target_time AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh',\n        'yyyy-MM-dd HH:mm') AS target_local, format_datetime(issued_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh',\n        'yyyy-MM-dd HH:mm:ss') AS issued_local FROM iceberg.live.forecast_actual WHERE mode='operational'"
+    },
+    "model_metrics": {
+      "table_name": "model_metrics",
+      "schema": "live"
+    }
+  },
+  "charts": [
+    {
+      "name": "AQ • PM2.5 theo giờ Việt Nam",
+      "dataset": "hourly_local",
+      "type": "echarts_timeseries_line",
+      "parameter": "pm25"
+    },
+    {
+      "name": "AQ • PM10 theo giờ Việt Nam",
+      "dataset": "hourly_local",
+      "type": "echarts_timeseries_line",
+      "parameter": "pm10"
+    },
+    {
+      "name": "AQ • Độ phủ giờ theo trạm",
+      "dataset": "hourly_local",
+      "type": "table",
+      "coverage": true
+    },
+    {
+      "name": "AQ • Độ mới từng sensor",
+      "dataset": "freshness_status",
+      "type": "table",
+      "columns": [
+        "station_name",
+        "parameter_name",
+        "series_kind",
+        "last_measurement_local",
+        "age_minutes",
+        "records"
+      ]
+    },
+    {
+      "name": "AQ • Tổng hợp ngày Việt Nam",
+      "dataset": "daily",
+      "type": "table",
+      "columns": [
+        "local_date",
+        "station_name",
+        "parameter_name",
+        "mean_value",
+        "valid_hours",
+        "expected_hours",
+        "coverage_percent"
+      ]
+    },
+    {
+      "name": "AQ • Backtest PM2.5 — thực tế và dự báo",
+      "dataset": "forecast_comparison",
+      "type": "echarts_timeseries_line",
+      "forecast": true
+    },
+    {
+      "name": "AQ • Đánh giá RF và persistence — tập test",
+      "dataset": "model_metrics",
+      "type": "table",
+      "columns": [
+        "station_name",
+        "algorithm",
+        "n",
+        "mae",
+        "rmse",
+        "model_version"
+      ]
+    },
+    {
+      "name": "AQ • Dự báo đã phát hành",
+      "dataset": "operational_forecasts",
+      "type": "table",
+      "columns": [
+        "station_name",
+        "issued_local",
+        "target_local",
+        "predicted_value",
+        "baseline_value",
+        "actual_value",
+        "error",
+        "model_version"
+      ]
+    }
+  ]
+}

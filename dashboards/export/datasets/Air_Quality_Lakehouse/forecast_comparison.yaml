@@ -1,0 +1,109 @@
+table_name: forecast_comparison
+main_dttm_col: target_time
+description: null
+default_endpoint: null
+offset: 0
+cache_timeout: null
+catalog: iceberg
+schema: live
+sql: "SELECT h.sensor_id,h.station_name,h.period_end AS target_time,\n        format_datetime(h.period_end\
+  \ AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Ho_Chi_Minh',\n        'yyyy-MM-dd HH:mm')\
+  \ AS local_time,u.curve,u.chart_value\n        FROM iceberg.live.hourly h LEFT JOIN\
+  \ iceberg.live.forecast_actual f\n          ON h.sensor_id=f.sensor_id AND h.period_end=f.target_time\
+  \ AND f.mode='backtest'\n          AND f.issued_at=(SELECT max(issued_at) FROM iceberg.live.forecast_actual\
+  \ WHERE mode='backtest')\n        CROSS JOIN UNNEST(ARRAY['Th\u1EF1c t\u1EBF','Random\
+  \ Forest','Persistence'],\n          ARRAY[h.value,f.predicted_value,f.baseline_value])\
+  \ AS u(curve,chart_value)\n        WHERE h.parameter_name='pm25'"
+params: null
+template_params: null
+filter_select_enabled: true
+fetch_values_predicate: null
+extra: null
+normalize_columns: false
+always_filter_main_dttm: false
+uuid: f29744ff-82f3-4193-83fc-5d6476e5fa2e
+metrics:
+- metric_name: count
+  verbose_name: COUNT(*)
+  metric_type: count
+  expression: COUNT(*)
+  description: null
+  d3format: null
+  currency: null
+  extra: null
+  warning_text: null
+columns:
+- column_name: target_time
+  verbose_name: null
+  is_dttm: true
+  is_active: true
+  type: TIMESTAMP(6) WITH TIME ZONE
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: station_name
+  verbose_name: "Tr\u1EA1m"
+  is_dttm: false
+  is_active: true
+  type: VARCHAR
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: curve
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: VARCHAR(13)
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: local_time
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: VARCHAR
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: chart_value
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: DOUBLE
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+- column_name: sensor_id
+  verbose_name: null
+  is_dttm: false
+  is_active: true
+  type: INTEGER
+  advanced_data_type: null
+  groupby: true
+  filterable: true
+  expression: ''
+  description: null
+  python_date_format: null
+  extra: null
+version: 1.0.0
+database_uuid: b2722eec-10d6-4f1f-aeca-c2824e616355

@@ -1,0 +1,66 @@
+slice_name: "AQ \u2022 \u0110\u1ED9 ph\u1EE7 gi\u1EDD theo tr\u1EA1m"
+description: null
+certified_by: null
+certification_details: null
+viz_type: table
+params:
+  datasource: 1__table
+  viz_type: table
+  time_range: No filter
+  row_limit: 10000
+  adhoc_filters: []
+  annotation_layers: []
+  page_length: 20
+  table_timestamp_format: '%d/%m/%Y'
+  number_format: ',.2f'
+  column_config:
+    mean_value:
+      d3NumberFormat: ',.2f'
+    coverage_percent:
+      d3NumberFormat: .1f
+    "Gi\u1EDD c\xF3 d\u1EEF li\u1EC7u":
+      d3NumberFormat: ',.0f'
+    "Gi\u1EDD trong c\u1EEDa s\u1ED5":
+      d3NumberFormat: ',.0f'
+    "\u0110\u1ED9 ph\u1EE7 (%)":
+      d3NumberFormat: .1f
+    mae:
+      d3NumberFormat: ',.2f'
+    rmse:
+      d3NumberFormat: ',.2f'
+    predicted_value:
+      d3NumberFormat: ',.2f'
+    baseline_value:
+      d3NumberFormat: ',.2f'
+    actual_value:
+      d3NumberFormat: ',.2f'
+    error:
+      d3NumberFormat: ',.2f'
+    n:
+      d3NumberFormat: ',.0f'
+  query_mode: aggregate
+  groupby:
+  - station_name
+  - parameter_name
+  metrics:
+  - expressionType: SQL
+    sqlExpression: COUNT(value)
+    label: "Gi\u1EDD c\xF3 d\u1EEF li\u1EC7u"
+    hasCustomLabel: true
+    optionName: "Gi\u1EDD c\xF3 d\u1EEF li\u1EC7u"
+  - expressionType: SQL
+    sqlExpression: COUNT(*)
+    label: "Gi\u1EDD trong c\u1EEDa s\u1ED5"
+    hasCustomLabel: true
+    optionName: "Gi\u1EDD trong c\u1EEDa s\u1ED5"
+  - expressionType: SQL
+    sqlExpression: 100.0 * COUNT(value) / COUNT(*)
+    label: "\u0110\u1ED9 ph\u1EE7 (%)"
+    hasCustomLabel: true
+    optionName: "\u0110\u1ED9 ph\u1EE7 (%)"
+  all_columns: []
+query_context: null
+cache_timeout: null
+uuid: 2a3f55ce-f607-49d7-86fe-cd5be67e2a8c
+version: 1.0.0
+dataset_uuid: 37746955-8fee-42f3-9c58-e5f35890447f

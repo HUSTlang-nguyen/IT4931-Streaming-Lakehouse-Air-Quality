@@ -1,9 +1,9 @@
-# Xử lý Lakehouse
+# processing
 
-**Trạng thái:** scaffold, chưa có hàm nghiệp vụ.
+- session.py: Spark UTC, REST/S3 chung catalog Trino, readiness/bucket.
+- transforms.py: parse Kafka/deadletter, normalize/quality, dedup và Gold pure transforms.
+- tables.py: Iceberg v2 create/MERGE, atomic Gold overwrite, correction/late recovery.
+- jobs.py: entrypoint smoke/ingest/train/predict/benchmark jobs trong container.
+- experiments.py: copy real Silver riêng namespace, pruning/compaction/time travel.
 
-PySpark Bronze/Silver/Gold, chuẩn hóa, MERGE chống trùng/correction, late data và quality. Gold mean chỉ sau xác minh khoảng đo.
-
-**I/O dự kiến:** Kafka/raw → các bảng Iceberg có thể chạy lại an toàn, kèm báo cáo chất lượng.
-
-Khi triển khai: thêm module có trách nhiệm cụ thể, giải thích vai trò/I/O và logic khó bằng docstring/comment tiếng Việt; cập nhật [walkthrough](../../../docs/code-walkthrough.md) và lab liên quan. Không thêm hàm giả để lấp thư mục.
+[Lab03](../../../labs/03-lakehouse.md) và [Lab04](../../../labs/04-gold-quality.md). foreachBatch at-least-once, MERGE + checkpoint tạo kết quả idempotent; không transaction đa bảng.

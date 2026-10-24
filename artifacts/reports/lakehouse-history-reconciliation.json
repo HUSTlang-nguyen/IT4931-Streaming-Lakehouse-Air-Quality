@@ -1,0 +1,90 @@
+{
+  "tables": {
+    "bronze": 202041,
+    "silver": 202041,
+    "hourly": 17280,
+    "daily": 724,
+    "freshness": 8
+  },
+  "silver_groups": [
+    [
+      13502151,
+      "hours",
+      4042
+    ],
+    [
+      13502151,
+      "measurements",
+      47253
+    ],
+    [
+      13502152,
+      "hours",
+      4060
+    ],
+    [
+      13502152,
+      "measurements",
+      47173
+    ],
+    [
+      13502153,
+      "hours",
+      4037
+    ],
+    [
+      13502153,
+      "measurements",
+      47122
+    ],
+    [
+      13502154,
+      "hours",
+      3957
+    ],
+    [
+      13502154,
+      "measurements",
+      44397
+    ]
+  ],
+  "hourly_missing_bins": 1184,
+  "source_unique": 202041,
+  "provenance": {
+    "generated_at": "2026-10-24T09:13:50.931997Z",
+    "code_revision": "c5ab9fae82621fcf54f533b79e90fbb77c08fe66",
+    "working_tree_dirty": true
+  },
+  "scope": "OpenAQ backfill -> Kafka ACK -> Structured Streaming -> Iceberg/MinIO -> Trino; dashboard/ML not yet validated",
+  "historical_snapshots_verified": {
+    "bronze": {
+      "snapshot_id": 130866060886673620,
+      "committed_at": "2026-10-24 09:11:49.821 UTC",
+      "summary_total_records": "202041",
+      "time_travel_count": 202041
+    },
+    "silver": {
+      "snapshot_id": 907403873756165676,
+      "committed_at": "2026-10-24 09:11:51.673 UTC",
+      "summary_total_records": "202041",
+      "time_travel_count": 202041
+    },
+    "hourly": {
+      "snapshot_id": 7696290597482134799,
+      "committed_at": "2026-10-24 09:11:52.962 UTC",
+      "summary_total_records": "17280",
+      "time_travel_count": 17280
+    },
+    "daily": {
+      "snapshot_id": 6811317090129568534,
+      "committed_at": "2026-10-24 09:11:53.382 UTC",
+      "summary_total_records": "724",
+      "time_travel_count": 724
+    }
+  },
+  "snapshot_verification_context": {
+    "generated_at": "2026-10-24T09:36:23.795605Z",
+    "code_revision": "c5ab9fae82621fcf54f533b79e90fbb77c08fe66",
+    "working_tree_dirty": true
+  }
+}

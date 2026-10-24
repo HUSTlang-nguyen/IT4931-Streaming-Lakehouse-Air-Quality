@@ -1,15 +1,5 @@
-# Bản đồ tài liệu
+# Tài liệu dự án
 
-**Scaffold:** tài liệu thiết kế, chưa phải bằng chứng pipeline chạy.
+[Context hiện tại](IMPLEMENTATION_CONTEXT.md) là điểm khôi phục sau compaction; [nhật ký](AGENT_WORK_LOG.md) nối tiếp theo STEP, không xóa lịch sử. Kiểm code/artifact/process thật trước khi tin status.
 
-| Đọc khi nào | Tài liệu |
-|---|---|
-| Agent bắt đầu hoặc sau compaction | [Context](IMPLEMENTATION_CONTEXT.md), [kế hoạch](../IMPLEMENTATION_PLAN.md), [nhật ký](AGENT_WORK_LOG.md) |
-| Bắt đầu Goal | [Prompt đầy đủ](../GOAL_PROMPT.md) |
-| Tìm trách nhiệm và luồng dữ liệu | [Kiến trúc](architecture.md) |
-| Tìm ý nghĩa trường/quy tắc | [Data dictionary](data-dictionary.md) |
-| Học cách đọc code | [Walkthrough](code-walkthrough.md), [labs](../labs/README.md) |
-| Chuẩn bị thuyết trình | [Presentation guide](presentation-guide.md) |
-| Xem khảo sát và nguồn ban đầu | [Đề xuất](proposal/README.md) |
-
-Context tóm tắt **hiện tại**, work log ghi **lịch sử**, architecture giải thích **thiết kế**. Khi thiết kế thay đổi, cập nhật cả architecture và context, thêm STEP giải thích lý do; không chép nguyên log vào context.
+[Kiến trúc](architecture.md), [dictionary](data-dictionary.md), [walkthrough](code-walkthrough.md), [code trình bày](presentation-guide.md), [demo](demo.md), [labs](../labs/README.md), [đề xuất gốc](proposal/README.md). Đề xuất là scope ban đầu, reports/context ghi implementation và kết quả thực nghiệm mới nhất.

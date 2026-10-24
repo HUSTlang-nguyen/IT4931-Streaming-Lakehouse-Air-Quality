@@ -16,7 +16,7 @@ def evidence_context(source: Path | None = None) -> dict[str, Any]:
     sau này có thể truyền AIR_QUALITY_CODE_REVISION khi build mà không copy .git.
     """
     revision = os.getenv("AIR_QUALITY_CODE_REVISION")
-    dirty: bool | None = None
+    dirty: bool | None = {"true": True, "false": False}.get(os.getenv("AIR_QUALITY_CODE_DIRTY", ""))
     try:
         revision = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True,
                                            stderr=subprocess.DEVNULL, timeout=5).strip()
@@ -25,7 +25,9 @@ def evidence_context(source: Path | None = None) -> dict[str, Any]:
     except (OSError, subprocess.SubprocessError):
         # Không có Git trong runtime là trường hợp hợp lệ, không giả clean.
         # Lỗi Git không được dùng để bỏ qua lỗi pipeline; đây chỉ là provenance.
-        dirty = None
+        # Giữ dirty flag nếu job launcher đã truyền tường minh từ Git host.
+        # Không có bằng chứng từ launcher thì vẫn None, không giả clean.
+        pass
     result: dict[str, Any] = {"generated_at": iso_utc(datetime.now(timezone.utc)),
                               "code_revision": revision, "working_tree_dirty": dirty}
     if source is not None:

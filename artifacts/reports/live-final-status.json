@@ -1,0 +1,65 @@
+{
+  "services": [
+    {
+      "Service": "catalog",
+      "State": "running",
+      "Health": "",
+      "ExitCode": 0
+    },
+    {
+      "Service": "catalog-init",
+      "State": "exited",
+      "Health": "",
+      "ExitCode": 0
+    },
+    {
+      "Service": "collector",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "kafka",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "minio",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "postgres",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "processor",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "superset",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    },
+    {
+      "Service": "trino",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0
+    }
+  ],
+  "catalog_http_readiness": 200,
+  "silver_duplicate_keys": 0,
+  "provenance": {
+    "generated_at": "2026-10-24T10:35:39.005781Z",
+    "code_revision": "e18e0b09e71a892ea32997bfad7e727f952e1472",
+    "working_tree_dirty": true
+  }
+}

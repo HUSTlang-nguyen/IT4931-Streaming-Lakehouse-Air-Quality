@@ -21,6 +21,8 @@ build/
 dist/
 *.egg-info/
 .ipynb_checkpoints/
+.playwright-cli/
+/output/playwright/
 .DS_Store
 Thumbs.db
 

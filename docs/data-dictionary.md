@@ -1,54 +1,41 @@
-# Data dictionary dự kiến
+# Data dictionary thực thi
 
-Chưa phải schema thực thi hay DDL. Dựa trên đề xuất được lưu trong [proposal](proposal/README.md); P1 phải kiểm tra payload và kiểu dữ liệu thực tế, không coi field dưới đây luôn có trong từng API response.
+## Registry
 
-## Địa điểm và sensor
-
-| Trạm | location_id | PM2.5 sensor_id | PM10 sensor_id |
+| Trạm | location_id | PM2.5 | PM10 |
 |---|---:|---:|---:|
-| ĐHBK, số 1 Giải Phóng | 4946813 | 13502154 | 13502152 |
+| ĐHBK | 4946813 | 13502154 | 13502152 |
 | Công viên Nhân Chính | 4946812 | 13502151 | 13502153 |
 
-Đây là ID từ khảo sát 23/10/2026. Cần tái xác nhận metadata, availability và độ mới ở P1. Khí mở rộng chưa có sensor được chốt.
+PM `parameter_name` là pm25/pm10, đơn vị µg/m³. Metadata được kiểm lại qua API ngày 24/10/2026. Không có temperature/humidity/gas trong scope hiện tại.
 
-## Measurement và provenance
+## Bảng Iceberg namespace live
 
-| Trường logic | Ý nghĩa | Quy tắc dự kiến |
+| Bảng | Khóa / trường quan trọng | Ý nghĩa |
 |---|---|---|
-| location_id, sensor_id | Trạm và kênh đo | Metadata liên kết ID, không suy từ tên trạm |
-| parameter | PM2.5/PM10 hoặc khí phù hợp | Ánh xạ từ metadata đã kiểm tra |
-| value, unit | Nồng độ và đơn vị | PM mặc định mong đợi µg/m³; khác đơn vị cần quy tắc minh bạch |
-| period_start, period_end | Khoảng số đo đại diện | UTC, giữ cả đầu/cuối; không thay bằng ingested_at |
-| reported_interval | Interval do nguồn báo | Giữ giá trị nguồn; chưa suy ra nhịp quan trắc |
-| ingested_at | Lúc hệ thống thu thập | UTC; không chứng minh availability của lịch sử quá khứ |
-| ingest_mode | live/backfill/replay | Replay tách namespace, không trộn metrics live |
-| source/provenance | Provider, request range, raw reference | Truy xuất nguồn; không lưu key/header bí mật |
-| quality_flags | Invalid/không đủ điều kiện cùng lý do | Bảo toàn raw; không âm thầm biến lỗi thành 0 |
-| coordinates | Vị trí trạm | Có thể chỉ nằm ở metadata, measurement không bắt buộc có |
+| bronze | event_id; schema_version, job_id, ingest_mode, ingested_at, request_from/to, raw_payload, location_metadata, Kafka topic/partition/offset, original_ingested_at (replay) | Envelope v1, raw JSON strings giữ nguyên; partition ngày ingested_at |
+| silver | sensor_id,series_kind,period_start,period_end; value,unit,quality_flags,ingested_at,provider,latitude,longitude | Trạng thái mới nhất của phép đo; partition tháng period_end |
+| rejected | event_id + fields normalized | Thiếu bất kỳ thành phần business key; vẫn giữ Bronze |
+| dead_letter | Kafka topic,partition,offset,message,reason | Sai envelope/schema/mode; replay vào live bị cách ly |
+| hourly | sensor_id,period_end; value,has_data,quality_flags,ingested_at,observed_count,period_start,unit | Grid giờ với mean nguồn /hours, null khi thiếu/invalid; partition tháng |
+| daily | sensor_id,local_date; mean_value,valid_hours,expected_hours=24,window_bins,coverage_percent | Mean giờ hợp lệ theo UTC+7, ngày biên có thể chưa đủ24 giờ |
+| freshness | sensor_id,series_kind; last_measurement_at,last_ingested_at,records,valid_records | Độ mới từng sensor/resource, không suy từ trạm |
+| predictions | model_version,sensor_id,target_time,mode; input_time,issued_at,inputs_available_at,predicted_value,baseline_value,unit,source_snapshot,stale_input | Giữ forecast đầu tiên mỗi key, không thay bằng lần phát hành muộn hơn |
+| forecast_actual | predictions + actual_value,error | Materialize join actual Gold hiện tại mỗi predict; actual chưa có null, error=predicted-actual |
+| model_metrics | model_version,sensor_id,algorithm; n,mae,rmse,source_snapshot | Test RF/Persistence cùng mẫu; metrics snapshot cố định khác actual có thể sửa sau |
 
-Khóa Silver dự kiến: `(sensor_id, series_kind, period_start, period_end)` trong namespace dữ liệu tương ứng. Nếu nguồn sửa cùng khóa, phải có quy tắc chọn bản mới được kiểm chứng, không chọn ngẫu nhiên. Bronze giữ lần thu thập để truy vết; thu thập lặp có thể thêm raw nhưng không thêm bản ghi logic Silver.
+Mọi timestamp lưu UTC; local_date là date Việt Nam. `period_end` của /hours tròn giờ, period dài3600 giây đã qua live contract bốn sensor; value nguồn có lượng tử hóa3 chữ số có nghĩa. Không diễn giải mean này như số đo tức thời. observed_count giữ nguồn để truy vết, không dùng metadata percentCoverage>100% làm độ phủ phân tích.
 
-## Gold và chất lượng
+## Quality và correction
 
-Lưu count, expected count theo cadence đã xác minh, coverage, last event time và freshness theo sensor. Nếu cadence chưa đủ cơ sở, chỉ báo số lượng/khoảng cách quan sát được, không gắn tỷ lệ coverage như chứng nhận chất lượng. Không tính mean giờ/ngày khi ý nghĩa khoảng đo chưa rõ; PM2.5/PM10 của hai điểm không đại diện toàn thành phố.
+Flags gồm invalid_value (null/NaN/inf/âm), unexpected_unit, invalid_period, source_flagged, metadata_mismatch, unknown_series, invalid_ingested_at. Hai ký tự micro được chuẩn hóa, không tự đổi mg/m³. Bản invalid có key vẫn ở Silver nhưng loại khỏi Gold bằng null. Correction mới hơn có thể thay valid thành invalid, Gold được tính lại để bỏ giá trị cũ.
 
-## ML và forecast
+Newest ingested_at thắng cùng Silver key, event_id tie-break ổn định; timestamp hợp lệ mới ưu tiên hơn null để correction phục hồi được bản lỗi. Bronze event_id là lần quan sát logic bất biến; thu lại payload sau đó có thể thêm Bronze nhưng không thêm Silver key. Replay topic/namespace riêng, không trộn live/ML metrics.
 
-| Trường logic | Ý nghĩa |
-|---|---|
-| station/location_id | Model riêng từng trạm |
-| feature_time | Mốc chuỗi giờ hợp lệ dùng tạo feature |
-| target_time | feature_time + 1 giờ; không lệch theo dòng |
-| issued_at | Lúc hệ thống phát hành dự báo |
-| predicted_value, unit | PM2.5 dự báo, µg/m³ |
-| model_version, data_snapshot | Truy xuất model/config và dữ liệu huấn luyện |
-| evaluation_mode | backtest hoặc operational |
-| actual_value, error | Bổ sung sau khi có actual hợp lệ |
+## ML features, split và coverage
 
-Features dự kiến: PM2.5 hiện tại, lag 1/2/3/24 giờ và giờ trong ngày địa phương. Giữ null/gap minh bạch; không nội suy tương lai. Ghi split time range, số mẫu và MAE/RMSE model/persistence trên cùng mẫu; chưa có metric thực nghiệm nào ở scaffold.
+Current PM2.5, lag1/2/3/24 giờ theo timestamp, hour_of_day UTC+7. Target=current timestamp+1h; label chỉ join để train/evaluate. Không impute. Split theo thời gian 70/15/15, purge target chạm boundary; counts có thể khác tỷ lệ do gaps. MAE/RMSE tính cùng mẫu cho RF/persistence; không yêu cầu RF thắng.
 
-## Envelope v1 đã triển khai (Collector)
+Operational input phải thu trước issued_at, target chưa hết hạn; input quá90 phút hoặc target đã qua bị suppress. Backtest issued_at là lúc chạy đánh giá hôm nay, mode=backtest, không giả issue timestamp lịch sử. manifest chứa model path, version/config/seed/splits/data snapshot/code provenance. Model binaries ở volume ignored.
 
-Xem `make_event` trong `src/air_quality/contracts/events.py`: schema_version, event_id, job_id, location_id, sensor_id, station_name, parameter_name, series_kind, ingest_mode, ingested_at, request_from/to, raw_payload và location_metadata. Hai payload cuối là JSON string để bảo toàn nguồn trước Spark. series_kind là measurements/hours. Job ID chứa sink destination để capture file không chiếm checkpoint Kafka.
-
-Target ML được định nghĩa là PM2.5 giờ do endpoint OpenAQ /hours cung cấp. Bốn sensor đã qua live contract test: period dài đúng một giờ, mốc cuối tròn giờ, timestamp không trùng và value nằm trong nửa đơn vị chữ số cuối của summary.avg sau lượng tử hóa ba chữ số có nghĩa. Đây là quan sát API hiện tại, không chứng nhận độ chính xác cảm biến hoặc lời giải cho rolling interval raw. Giữ nguyên value và summary nguồn; không tự bình quân lại raw 5 phút.
+Source coverage: số hourly bins có /hours hợp lệ trên số bins lịch sử, không phải độ chính xác cảm biến. Daily coverage=valid_hours/24, luôn trình bày ngày biên/hiện tại chưa đầy đủ. Khoảng thiếu dài nhất là timestamp gap87h, tương ứng86 bins giữa hai điểm hợp lệ.
