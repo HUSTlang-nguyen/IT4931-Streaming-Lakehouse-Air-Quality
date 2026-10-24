@@ -1,6 +1,6 @@
 # Kế hoạch triển khai và nghiệm thu
 
-Trạng thái: chuẩn bị repository, chưa triển khai nghiệp vụ. [Prompt độc lập](GOAL_PROMPT.md) quy định Goal khi người dùng bắt đầu; [context](docs/IMPLEMENTATION_CONTEXT.md) ghi trạng thái thực tế.
+Trạng thái: Goal đang triển khai; Collector/API và backfill nguồn đã có bằng chứng, stack/ML chưa hoàn tất. [Prompt độc lập](GOAL_PROMPT.md) quy định Goal khi người dùng bắt đầu; [context](docs/IMPLEMENTATION_CONTEXT.md) ghi trạng thái thực tế.
 
 ## P0 — Scaffold (lượt chuẩn bị)
 
@@ -29,7 +29,7 @@ Trạng thái: chuẩn bị repository, chưa triển khai nghiệp vụ. [Promp
 ## P3 — Thu thập
 
 - [ ] Metadata/measurements: pagination, timeout, rate limit, Retry-After, bounded retry/backoff.
-- [ ] Backfill 180 ngày cố định mốc đầu/cuối, checkpoint/resume, báo cáo ngày thiếu thực tế.
+- [x] Backfill nguồn 180 ngày cố định, checkpoint/resume và source coverage (202.041 unique records); chưa chứng minh Kafka/Iceberg E2E.
 - [ ] Live 5 phút/lần, overlap 24 giờ; đối soát 7 ngày mỗi ngày; cấu hình được.
 - [ ] Replay namespace riêng; Kafka event giữ provenance và định danh.
 

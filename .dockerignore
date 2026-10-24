@@ -1,0 +1,12 @@
+# Build context allowlist: không gửi key, .venv, Git, dữ liệu hoặc model cho builder.
+*
+!pyproject.toml
+!README.md
+!src/
+!src/**
+!infra/
+!infra/**
+!requirements/
+!requirements/**
+**/__pycache__/
+**/*.pyc

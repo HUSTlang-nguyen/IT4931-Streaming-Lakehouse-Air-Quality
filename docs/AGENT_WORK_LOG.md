@@ -94,3 +94,30 @@ Hash commit mới ghi ở STEP sau, tránh tự tham chiếu hash chứa chính 
 - Kiểm chứng: start session 65016 exit 0; Docker engine 28.4.0, 16 CPU/RAM ~7,46 GiB; các session cũ 16316/15755 đã terminal, không còn chờ. Không có container chạy trước khi dựng dự án.
 - Trạng thái: blocker Docker đã giải quyết; backup runtime sockets giữ nguyên.
 - Bước tiếp: image tag/digest verification và Compose giới hạn RAM, tiếp tục Goal.
+
+## STEP-008 — 2026-10-24T15:49:35+07:00 — Checkpoint GitHub và backfill nguồn hoàn tất
+
+- Git: `feat/air-quality-lakehouse`, Collector commit `301ab9ebb934ff4ff6644c6f92adb43ac40880ad` đã push; draft PR https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality/pull/1 đã tạo/attach, chưa merge.
+- Kiểm chứng: session backfill21843 exit0; profiler67325 exit0; 202.041 bản ghi nguồn duy nhất gồm raw/hours bốn sensor, không trùng khóa trong JSONL. 20 unit pass sau bổ sung profiler.
+- File/hàm: observability/coverage.py (jsonl_events/profile_events), evidence.py, CLI profile; artifacts/reports/source-coverage.json và backfill-180d.md. Code profiler còn chưa commit lúc ghi STEP.
+- Phát hiện: hourly availability 91,597–93,981% trên 4.320 bins, gap hourly tối đa87h. Coverage metadata nguồn không dùng làm chất lượng; không nhầm source count với Silver count.
+- Trạng thái: thu thập nguồn180ngày và profile đã có bằng chứng; Kafka/stream/lưu trữ/ML vẫn chưa nghiệm thu.
+- Bước tiếp: đưa source archive qua Kafka, đối chiếu Silver với profile; tiếp tục toàn Goal.
+
+## STEP-009 — 2026-10-24T15:49:35+07:00 — MinIO source build để giữ kiến trúc
+
+- Docker engine đã sẵn sàng sau STEP-007. Kiểm tra image tags/version, DockerHub MinIO và Quay tag thử đều401, không đổi sang object store khác.
+- Đã đối chiếu README upstream source-only và GitHub release API: RELEASE.2025-10-15T17-29-55Z → commit9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a.
+- File: infra/minio/Dockerfile, README, root .dockerignore allowlist. Build Go1.24.9 chỉ là dependency MinIO, Python application giữ nguyên. LICENSE được copy vào image.
+- Tiến trình: session69048, `docker build --progress plain -f infra/minio/Dockerfile -t air-quality-minio:2025-10-15 .`, log artifacts/local/minio-build.log; đang download/compile khi ghi. Không restart khi handle còn sống.
+- Trạng thái: build chưa có kết quả terminal; runtime compatibility chưa được khẳng định.
+- Bước tiếp: poll build, xác nhận minio --version/health, viết Compose cùng Kafka/REST catalog/Trino/Spark/Superset.
+
+## STEP-010 — 2026-10-24T15:53:08+07:00 — Xác minh source profiler và image MinIO
+
+- Git nền301ab9e, draft PR#1 tiếp tục; code profiler và infra chuẩn bị commit riêng.
+- Kiểm chứng: 21 unit pass/4 live skip ở lần offline mới nhất; 4 live pass riêng ở STEP-006. Thêm fixture bốn hàng public nguồn với attribution/provider/licenses, không auth header; fixture shape test offline gọi production make_event/profile_events.
+- MinIO build69048 exit0, binary --version và license test exit0; pin thêm Go image digest và cached rebuild exit0. Image `sha256:a8835691de731cd242e9246af0212b29e887164dfcf69615f6fd669fc01960e0`, 115590900 bytes. Binary hiển thị DEVELOPMENT.GOGET, không tự báo tag release; provenance là source commit và build recipe.
+- File: .dockerignore, infra/minio/Dockerfile/README, artifacts/reports/minio-source-build.md; profiler report và code như STEP-008. Chưa test S3/object persistence/catalog.
+- Trạng thái: backfill nguồn/Collector đã có bằng chứng, dependency MinIO build đã có; toàn Goal vẫn active với P2–P6 còn việc. Các process dài trước đều terminal; không có process cần resume lúc ghi.
+- Bước tiếp: commit/push các checkpoint rồi dựng Compose project riêng và Spark/Iceberg, xử lý dữ liệu thật đã thu qua Kafka.
