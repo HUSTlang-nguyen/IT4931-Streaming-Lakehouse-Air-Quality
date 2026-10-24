@@ -27,3 +27,23 @@ def test_compose_argv_keeps_space_paths_and_project_scope(tmp_path):
     assert args[args.index("--env-file") + 1] == str(path.resolve())
     assert args[args.index("--project-name") + 1] == "air-quality-lakehouse"
     assert args[-1] == "stop" and "-v" not in args and "prune" not in args
+
+
+def test_first_test_run_creates_artifact_parent_before_pytest(tmp_path, monkeypatch):
+    """Clone mới chưa có cache/log; pytest phải nhận basetemp có parent tồn tại."""
+    from types import SimpleNamespace
+    from air_quality import operations
+
+    assert not (tmp_path / "artifacts/local").exists()
+    monkeypatch.setattr(operations, "ROOT", tmp_path)
+    invocations = []
+
+    def invoke(argv, cwd):
+        assert cwd == tmp_path and (cwd / "artifacts/local").is_dir()
+        assert any(arg.startswith("--basetemp=artifacts/local/") for arg in argv)
+        invocations.append(argv)
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr(operations.subprocess, "run", invoke)
+    operations.run_tests(tmp_path / ".env")
+    assert len(invocations) == 1
