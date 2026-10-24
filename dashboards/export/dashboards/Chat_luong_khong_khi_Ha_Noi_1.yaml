@@ -1,0 +1,366 @@
+dashboard_title: "Ch\u1EA5t l\u01B0\u1EE3ng kh\xF4ng kh\xED H\xE0 N\u1ED9i"
+description: null
+css: null
+slug: air-quality-hanoi
+certified_by: null
+certification_details: null
+published: true
+uuid: 209f2fd6-851a-40a7-a005-3d3f9777643d
+position:
+  DASHBOARD_VERSION_KEY: v2
+  ROOT_ID:
+    id: ROOT_ID
+    type: ROOT
+    children:
+    - GRID_ID
+  GRID_ID:
+    id: GRID_ID
+    type: GRID
+    children:
+    - SOURCE-NOTE
+    - ROW-0
+    - ROW-1
+    - ROW-FULL-4
+    - ROW-FULL-5
+    - ROW-FULL-6
+    - ROW-FULL-7
+    - ROW-N-JQ0LD0I0
+    parents:
+    - ROOT_ID
+  HEADER_ID:
+    id: HEADER_ID
+    type: HEADER
+    meta:
+      text: "Ch\u1EA5t l\u01B0\u1EE3ng kh\xF4ng kh\xED H\xE0 N\u1ED9i"
+  SOURCE-NOTE:
+    id: SOURCE-NOTE
+    type: MARKDOWN
+    children: []
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    meta:
+      width: 12
+      height: 15
+      code: "**\u0110HBK \xB7 C\xF4ng vi\xEAn Nh\xE2n Ch\xEDnh** \u2014 Ngu\u1ED3\
+        n: OpenAQ / Hanoi AQ Monitoring Network. \u0110\u01A1n v\u1ECB \xB5g/m\xB3\
+        , gi\u1EDD VN (UTC+7). Bi\u1EC3u \u0111\u1ED3 7 ng\xE0y t\u1EDBi hi\u1EC7\
+        n t\u1EA1i; kho\u1EA3ng tr\u1ED1ng l\xE0 thi\u1EBFu d\u1EEF li\u1EC7u. Ng\xE0\
+        y hi\u1EC7n t\u1EA1i ch\u01B0a \u0111\u1EE7 24 gi\u1EDD. **Backtest** l\xE0\
+        \ \u0111\xE1nh gi\xE1 h\u1ED3i c\u1EE9u tr\xEAn snapshot, kh\xF4ng ph\u1EA3\
+        i d\u1EF1 b\xE1o \u0111\xE3 ph\xE1t h\xE0nh trong qu\xE1 kh\u1EE9; b\u1EA3\
+        ng **D\u1EF1 b\xE1o \u0111\xE3 ph\xE1t h\xE0nh** ghi operational. RF ch\u01B0\
+        a th\u1EAFng persistence nh\u1EA5t qu\xE1n, xem MAE/RMSE tr\xEAn c\xF9ng m\u1EAB\
+        u test."
+      background: BACKGROUND_TRANSPARENT
+  ROW-0:
+    id: ROW-0
+    type: ROW
+    children:
+    - CHART-1
+    - CHART-2
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-1:
+    id: CHART-1
+    type: CHART
+    children: []
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-0
+    meta:
+      chartId: 1
+      width: 6
+      height: 55
+      sliceName: "AQ \u2022 PM2.5 theo gi\u1EDD Vi\u1EC7t Nam"
+  CHART-2:
+    id: CHART-2
+    type: CHART
+    children: []
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-0
+    meta:
+      chartId: 2
+      width: 6
+      height: 55
+      sliceName: "AQ \u2022 PM10 theo gi\u1EDD Vi\u1EC7t Nam"
+  ROW-1:
+    id: ROW-1
+    type: ROW
+    children:
+    - CHART-3
+    - CHART-4
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-3:
+    id: CHART-3
+    type: CHART
+    children: []
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-1
+    meta:
+      chartId: 3
+      width: 6
+      height: 55
+      sliceName: "AQ \u2022 \u0110\u1ED9 ph\u1EE7 gi\u1EDD theo tr\u1EA1m"
+  CHART-4:
+    id: CHART-4
+    type: CHART
+    children: []
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-1
+    meta:
+      chartId: 4
+      width: 6
+      height: 55
+      sliceName: "AQ \u2022 \u0110\u1ED9 m\u1EDBi t\u1EEBng sensor"
+  ROW-FULL-4:
+    id: ROW-FULL-4
+    type: ROW
+    children:
+    - CHART-5
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-5:
+    id: CHART-5
+    type: CHART
+    children: []
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-FULL-4
+    meta:
+      chartId: 5
+      width: 12
+      height: 55
+      sliceName: "AQ \u2022 T\u1ED5ng h\u1EE3p ng\xE0y Vi\u1EC7t Nam"
+  ROW-FULL-5:
+    id: ROW-FULL-5
+    type: ROW
+    children:
+    - CHART-6
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-6:
+    id: CHART-6
+    type: CHART
+    children: []
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-FULL-5
+    meta:
+      chartId: 6
+      width: 12
+      height: 55
+      sliceName: "AQ \u2022 Backtest PM2.5 \u2014 th\u1EF1c t\u1EBF v\xE0 d\u1EF1\
+        \ b\xE1o"
+  ROW-FULL-6:
+    id: ROW-FULL-6
+    type: ROW
+    children:
+    - CHART-7
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-7:
+    id: CHART-7
+    type: CHART
+    children: []
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-FULL-6
+    meta:
+      chartId: 7
+      width: 12
+      height: 55
+      sliceName: "AQ \u2022 \u0110\xE1nh gi\xE1 RF v\xE0 persistence \u2014 t\u1EAD\
+        p test"
+  ROW-FULL-7:
+    id: ROW-FULL-7
+    type: ROW
+    children:
+    - CHART-8
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    meta:
+      background: BACKGROUND_TRANSPARENT
+  CHART-8:
+    id: CHART-8
+    type: CHART
+    children: []
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-FULL-7
+    meta:
+      chartId: 8
+      width: 12
+      height: 55
+      sliceName: "AQ \u2022 D\u1EF1 b\xE1o \u0111\xE3 ph\xE1t h\xE0nh"
+  ROW-N-JQ0LD0I0:
+    children:
+    - CHART-WMT8TI6G
+    - CHART-KLYR9DNL
+    - CHART-S7PU0M69
+    - CHART-CH20JHDL
+    - CHART-LO5B585M
+    - CHART-4TILFHTM
+    - CHART-A4JIIZWL
+    - CHART-HHS7S7V9
+    id: ROW-N-JQ0LD0I0
+    meta:
+      '0': ROOT_ID
+      background: BACKGROUND_TRANSPARENT
+    type: ROW
+    parents:
+    - ROOT_ID
+    - GRID_ID
+  CHART-WMT8TI6G:
+    children: []
+    id: CHART-WMT8TI6G
+    meta:
+      chartId: 6
+      height: 50
+      sliceName: "AQ \u2022 Backtest PM2.5 \u2014 th\u1EF1c t\u1EBF v\xE0 d\u1EF1\
+        \ b\xE1o"
+      uuid: 09a8e4e5-8b2e-4fca-adcf-a465e11ae340
+      width: 4
+    type: CHART
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-N-JQ0LD0I0
+  CHART-KLYR9DNL:
+    children: []
+    id: CHART-KLYR9DNL
+    meta:
+      chartId: 7
+      height: 50
+      sliceName: "AQ \u2022 \u0110\xE1nh gi\xE1 RF v\xE0 persistence \u2014 t\u1EAD\
+        p test"
+      uuid: 27413942-98a5-4207-bb62-21a4cf7318d6
+      width: 4
+    type: CHART
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-N-JQ0LD0I0
+  CHART-S7PU0M69:
+    children: []
+    id: CHART-S7PU0M69
+    meta:
+      chartId: 5
+      height: 50
+      sliceName: "AQ \u2022 T\u1ED5ng h\u1EE3p ng\xE0y Vi\u1EC7t Nam"
+      uuid: 3c1dfd21-a012-42c5-abbc-9d2a5bd0db77
+      width: 4
+    type: CHART
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-N-JQ0LD0I0
+  CHART-CH20JHDL:
+    children: []
+    id: CHART-CH20JHDL
+    meta:
+      chartId: 1
+      height: 50
+      sliceName: "AQ \u2022 PM2.5 theo gi\u1EDD Vi\u1EC7t Nam"
+      uuid: 10c4b534-d2f2-4bd0-9caf-701276524ed3
+      width: 4
+    type: CHART
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-N-JQ0LD0I0
+  CHART-LO5B585M:
+    children: []
+    id: CHART-LO5B585M
+    meta:
+      chartId: 3
+      height: 50
+      sliceName: "AQ \u2022 \u0110\u1ED9 ph\u1EE7 gi\u1EDD theo tr\u1EA1m"
+      uuid: 2a3f55ce-f607-49d7-86fe-cd5be67e2a8c
+      width: 4
+    type: CHART
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-N-JQ0LD0I0
+  CHART-4TILFHTM:
+    children: []
+    id: CHART-4TILFHTM
+    meta:
+      chartId: 2
+      height: 50
+      sliceName: "AQ \u2022 PM10 theo gi\u1EDD Vi\u1EC7t Nam"
+      uuid: 896bda08-f539-42b4-a943-3eeb5874e2e4
+      width: 4
+    type: CHART
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-N-JQ0LD0I0
+  CHART-A4JIIZWL:
+    children: []
+    id: CHART-A4JIIZWL
+    meta:
+      chartId: 8
+      height: 50
+      sliceName: "AQ \u2022 D\u1EF1 b\xE1o \u0111\xE3 ph\xE1t h\xE0nh"
+      uuid: ec820066-814c-4bf7-bd34-cafe93adb214
+      width: 4
+    type: CHART
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-N-JQ0LD0I0
+  CHART-HHS7S7V9:
+    children: []
+    id: CHART-HHS7S7V9
+    meta:
+      chartId: 4
+      height: 50
+      sliceName: "AQ \u2022 \u0110\u1ED9 m\u1EDBi t\u1EEBng sensor"
+      uuid: d30c9a51-a81b-4c76-b806-b3d8d1d3b2f4
+      width: 4
+    type: CHART
+    parents:
+    - ROOT_ID
+    - GRID_ID
+    - ROW-N-JQ0LD0I0
+metadata:
+  refresh_frequency: 60
+  color_scheme: supersetColors
+  timed_refresh_immune_slices: []
+  expanded_slices: {}
+  label_colors: {}
+  shared_label_colors: []
+  map_label_colors: {}
+  color_scheme_domain: []
+  cross_filters_enabled: true
+version: 1.0.0

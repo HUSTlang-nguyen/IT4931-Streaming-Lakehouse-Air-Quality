@@ -1,0 +1,71 @@
+slice_name: "AQ \u2022 PM2.5 theo gi\u1EDD Vi\u1EC7t Nam"
+description: null
+certified_by: null
+certification_details: null
+viz_type: echarts_timeseries_line
+params:
+  datasource: 1__table
+  viz_type: echarts_timeseries_line
+  time_range: 'DATEADD(DATETIME("now"), -7, day) : DATETIME("now")'
+  row_limit: 10000
+  adhoc_filters:
+  - expressionType: SIMPLE
+    subject: parameter_name
+    operator: ==
+    comparator: pm25
+    clause: WHERE
+    filterOptionName: pm25
+  annotation_layers: []
+  page_length: 20
+  table_timestamp_format: '%d/%m/%Y'
+  number_format: ',.2f'
+  column_config:
+    mean_value:
+      d3NumberFormat: ',.2f'
+    coverage_percent:
+      d3NumberFormat: .1f
+    "Gi\u1EDD c\xF3 d\u1EEF li\u1EC7u":
+      d3NumberFormat: ',.0f'
+    "Gi\u1EDD trong c\u1EEDa s\u1ED5":
+      d3NumberFormat: ',.0f'
+    "\u0110\u1ED9 ph\u1EE7 (%)":
+      d3NumberFormat: .1f
+    mae:
+      d3NumberFormat: ',.2f'
+    rmse:
+      d3NumberFormat: ',.2f'
+    predicted_value:
+      d3NumberFormat: ',.2f'
+    baseline_value:
+      d3NumberFormat: ',.2f'
+    actual_value:
+      d3NumberFormat: ',.2f'
+    error:
+      d3NumberFormat: ',.2f'
+    n:
+      d3NumberFormat: ',.0f'
+  x_axis: local_time
+  groupby:
+  - station_name
+  granularity_sqla: period_end
+  metrics:
+  - expressionType: SQL
+    sqlExpression: AVG(value)
+    label: "\xB5g/m\xB3"
+    hasCustomLabel: true
+    optionName: "\xB5g/m\xB3"
+  time_grain_sqla: null
+  show_legend: true
+  rich_tooltip: true
+  legendType: scroll
+  seriesType: line
+  show_markers: false
+  connect_nulls: false
+  x_axis_sort_asc: true
+  x_axis_title: "Gi\u1EDD Vi\u1EC7t Nam (UTC+7)"
+  y_axis_title: "\xB5g/m\xB3"
+query_context: null
+cache_timeout: null
+uuid: 10c4b534-d2f2-4bd0-9caf-701276524ed3
+version: 1.0.0
+dataset_uuid: 37746955-8fee-42f3-9c58-e5f35890447f

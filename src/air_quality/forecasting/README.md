@@ -1,9 +1,7 @@
-# Dự báo PM2.5
+# forecasting
 
-**Trạng thái:** scaffold, chưa có hàm nghiệp vụ.
+features.py: exact-hour joins current/lag1/2/3/24, label+1h, chronological split/purge. model.py: Spark MLlib RF mỗi trạm, validation chọn depth, held-out test/persistence, model manifest/version, backtest/operational forecasts và actual enrichment.
 
-Features theo giờ thật, split thời gian, RF Spark MLlib, persistence, evaluation và inference. Chưa có chuỗi giờ hoặc model.
+Không impute gaps, không dùng target trong features; backtest final snapshot không giả availability quá khứ. Operational kiểm toàn bộ input ingested_at, model trained_at và target còn tương lai. predict là job theo lần gọi, chưa có scheduler nền.
 
-**I/O dự kiến:** Gold hợp lệ → model/config/metrics và forecast Iceberg, tách backtest/operational.
-
-Khi triển khai: thêm module có trách nhiệm cụ thể, giải thích vai trò/I/O và logic khó bằng docstring/comment tiếng Việt; cập nhật [walkthrough](../../../docs/code-walkthrough.md) và lab liên quan. Không thêm hàm giả để lấp thư mục.
+[Lab06](../../../labs/06-forecasting.md), [ML tests](../../../tests/integration/test_forecasting.py).

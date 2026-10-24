@@ -1,0 +1,58 @@
+slice_name: "AQ \u2022 T\u1ED5ng h\u1EE3p ng\xE0y Vi\u1EC7t Nam"
+description: null
+certified_by: null
+certification_details: null
+viz_type: table
+params:
+  datasource: 2__table
+  viz_type: table
+  time_range: No filter
+  row_limit: 10000
+  adhoc_filters: []
+  annotation_layers: []
+  page_length: 20
+  table_timestamp_format: '%d/%m/%Y'
+  number_format: ',.2f'
+  column_config:
+    mean_value:
+      d3NumberFormat: ',.2f'
+    coverage_percent:
+      d3NumberFormat: .1f
+    "Gi\u1EDD c\xF3 d\u1EEF li\u1EC7u":
+      d3NumberFormat: ',.0f'
+    "Gi\u1EDD trong c\u1EEDa s\u1ED5":
+      d3NumberFormat: ',.0f'
+    "\u0110\u1ED9 ph\u1EE7 (%)":
+      d3NumberFormat: .1f
+    mae:
+      d3NumberFormat: ',.2f'
+    rmse:
+      d3NumberFormat: ',.2f'
+    predicted_value:
+      d3NumberFormat: ',.2f'
+    baseline_value:
+      d3NumberFormat: ',.2f'
+    actual_value:
+      d3NumberFormat: ',.2f'
+    error:
+      d3NumberFormat: ',.2f'
+    n:
+      d3NumberFormat: ',.0f'
+  query_mode: raw
+  all_columns:
+  - local_date
+  - station_name
+  - parameter_name
+  - mean_value
+  - valid_hours
+  - expected_hours
+  - coverage_percent
+  metrics: []
+  groupby: []
+  order_by_cols:
+  - '["local_date", false]'
+query_context: null
+cache_timeout: null
+uuid: 3c1dfd21-a012-42c5-abbc-9d2a5bd0db77
+version: 1.0.0
+dataset_uuid: 391504bf-f07f-446a-aee4-59cf9e452058
