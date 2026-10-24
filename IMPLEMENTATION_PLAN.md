@@ -9,7 +9,7 @@ Trạng thái: chuẩn bị repository, chưa triển khai nghiệp vụ. [Promp
 - [x] Prompt, quy tắc agent, context, nhật ký, tài liệu lab/thuyết trình.
 - [x] Sao chép đề xuất, đồng bộ ML; giữ nguyên bản gốc bên ngoài.
 - [x] Kiểm tra package, links, secret, diff và lưu bằng chứng trong `artifacts/reports/scaffold-verification.md`.
-- [ ] Commit và push nhánh scaffold; không tạo PR.
+- [x] Commit và push nhánh scaffold; checkpoint ở STEP-004, không tạo PR.
 
 ## P1 — Khảo sát và hợp đồng dữ liệu
 

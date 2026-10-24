@@ -3,12 +3,12 @@
 ## Checkpoint để tiếp tục
 
 - Loại công việc hiện tại: chỉ scaffold/tài liệu, chưa tạo Goal.
-- Cập nhật: `2026-10-24T11:11:40+07:00`. STEP đã đồng bộ: `STEP-003`.
+- Cập nhật: `2026-10-24T11:12:28+07:00`. STEP đã đồng bộ: `STEP-004`.
 - Git root: repository `IT4931-Streaming-Lakehouse-Air-Quality` (thư mục con workspace ban đầu); không init Git ở thư mục cha.
 - Remote: `https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality.git`.
-- Nhánh hiện tại: `chore/project-scaffold`; commit nền `f64e464c04310d0d97ebe60bada7139096875458`.
-- Các file scaffold đang chưa commit tại thời điểm checkpoint này; cần kiểm tra `git status` khi tiếp tục, không coi ghi chú này là trạng thái Git live.
-- Bước tiếp theo ngay: commit và push scaffold; ghi hash/remote checkpoint ở STEP-004, chưa tạo PR.
+- Nhánh hiện tại: `chore/project-scaffold`, tracking `origin/chore/project-scaffold`; checkpoint scaffold `763b31a19faf95e8a376eba2d87ce5fe389b6376` đã commit và push thành công.
+- Checkpoint trên đã sạch ngay sau push; lượt cập nhật tài liệu này ghi nhận nó trong commit kế tiếp. Dùng `git status`/`git log` để biết HEAD và dirty state thực tế, không suy ra từ Markdown.
+- Bước tiếp theo: chờ người dùng bắt đầu Goal bằng GOAL_PROMPT.md; không tự chạy pipeline. Khi tiếp tục, kiểm tra commit tài liệu mới nhất và trạng thái remote trước.
 
 ## Yêu cầu được chốt
 
@@ -27,7 +27,7 @@ Sensor ĐHBK: location 4946813, PM2.5 13502154, PM10 13502152. Nhân Chính: loc
 | Lưu trữ | Bronze raw, Silver MERGE, Gold có điều kiện | Chưa có bảng/DDL/job |
 | ML | RF/persistence causal features, split theo giờ | Chưa có model/dataset/metrics |
 | Dashboard | Trino/Superset, gaps/freshness/forecast | Chưa có dashboard |
-| Tài liệu | Prompt, kế hoạch, lab outline, walkthrough, presentation guide | Scaffold đã tạo, đã kiểm chứng scaffold, không kiểm chứng pipeline |
+| Tài liệu | Prompt, kế hoạch, lab outline, walkthrough, presentation guide | Đã tạo và kiểm chứng scaffold; chưa kiểm chứng pipeline |
 | Kiểm thử | pytest unit/integration/live rõ ranh giới | Chưa có test nghiệp vụ; không báo pass pipeline |
 
 ## Điểm vào code và tài liệu

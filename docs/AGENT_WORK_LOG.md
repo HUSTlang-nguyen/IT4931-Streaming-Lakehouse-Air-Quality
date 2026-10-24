@@ -55,3 +55,15 @@ Hash commit mới ghi ở STEP sau, tránh tự tham chiếu hash chứa chính 
 - Trạng thái: hoàn thành phần xác minh scaffold.
 - Vấn đề còn lại: chưa commit/push. Không build wheel, chạy pytest, Docker, API hoặc ML; các kiểm tra trên không chứng minh nghiệp vụ.
 - Bước tiếp theo: commit scaffold, push branch và ghi Git checkpoint mới ở STEP-004.
+
+## STEP-004 — 2026-10-24T11:12:28+07:00 — Commit và push scaffold lên GitHub
+
+- Mục tiêu: bàn giao scaffold có version control và context để dùng Goal sau.
+- Git: `chore/project-scaffold`, checkpoint mới `763b31a19faf95e8a376eba2d87ce5fe389b6376`; origin tracking cùng hash ngay sau push; working tree sạch trước lượt cập nhật log/context này.
+- Đã thực hiện: commit `chore: prepare Python scaffold and persistent Goal context` (44 file); push `git push -u origin chore/project-scaffold`; không tạo PR/merge.
+- File/hàm liên quan: toàn bộ scaffold, sau đó cập nhật P0/context/log ghi checkpoint; chưa có hàm nghiệp vụ.
+- Quyết định và lý do: lưu hash commit scaffold ở bản cập nhật kế tiếp, không tự tham chiếu commit chứa hash của chính nó.
+- Kiểm chứng: commit thành công; push trả new branch và thiết lập upstream; `git rev-parse HEAD` bằng `git rev-parse origin/chore/project-scaffold`, status sạch trước cập nhật tài liệu. Lần push trong sandbox lỗi DNS; retry với quyền mạng được duyệt đã thành công.
+- Trạng thái: P0 hoàn thành; bản ghi checkpoint này sẽ commit/push tiếp bằng commit docs. Xem Git thực tế để biết hash tài liệu mới nhất.
+- Vấn đề còn lại: P1–P6 chưa triển khai; interval semantics/API/runtime và ML vẫn cần kiểm chứng. Không có Goal/Docker/API/ML được khởi chạy trong lượt chuẩn bị.
+- Bước tiếp theo: kiểm tra cuối và push commit docs; sau bàn giao chờ người dùng giao Goal, đọc context/plan/log rồi bắt đầu P1 trên nhánh triển khai từ scaffold.

@@ -54,3 +54,8 @@ Không cài hoặc khóa dependency, không build wheel, không chạy pytest (c
 
 - `2026-10-24T11:11:40+07:00`: `git diff --cached --check` exit 0 sau khi đổi hardbreak của bản sao báo cáo sang backslash Markdown; thêm `.gitattributes` cho LF ổn định. Đây là kiểm tra bổ sung ngoài 36 mục ở trên.
 - Đã xem staged stat/danh sách file: chỉ scaffold và tài liệu. Chưa commit/push tại thời điểm ghi mục này.
+
+## Checkpoint Git
+
+- `2026-10-24T11:12:28+07:00`: scaffold commit `763b31a19faf95e8a376eba2d87ce5fe389b6376` đã push thành công, HEAD khớp remote-tracking branch; working tree sạch trước cập nhật tài liệu checkpoint.
+- Không tạo PR hoặc merge. Hash của commit tài liệu cập nhật được lấy từ Git thực tế, không tự nhúng vào chính nó.
