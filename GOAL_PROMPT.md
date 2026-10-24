@@ -1,5 +1,7 @@
 # Prompt Goal — Air Quality Streaming Lakehouse
 
+Đặc tả lưu trữ của Goal triển khai ban đầu đã complete và merge qua PR#2. Contributor mới xem docs/SETUP.md và CONTRIBUTING.md trước. Chỉ khởi chạy một Goal mới khi người dùng yêu cầu rõ ràng; đọc file này không tự cho phép tạo lại Goal đã hoàn tất.
+
 Đặc tả độc lập để bắt đầu hoặc khôi phục Goal. Khi muốn triển khai, gửi phần prompt bên dưới trong repository này ở chế độ có thể chỉnh sửa file. Trạng thái hiện tại xem IMPLEMENTATION_CONTEXT.md và công cụ Goal; không suy ra từ sự tồn tại file này.
 
 ---
@@ -57,7 +59,7 @@ Sau mỗi mốc có ý nghĩa, append nhật ký rồi cập nhật context: cô
 ## 6. GitHub
 
 - Dùng repository hiện tại, remote `https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality.git`; không khởi tạo Git lồng nhau.
-- Kiểm tra base có scaffold và branch/PR trong context; reuse nhánh triển khai phù hợp. Nhánh ban đầu `feat/air-quality-lakehouse` đã có PR#1 merged; phần tiếp theo dùng `feat/lakehouse-ml-completion`/PR#2. Nếu PR cũ đã đóng, tạo nhánh mới từ main hiện tại và giữ các thay đổi đã kiểm chứng; không rewrite lịch sử đã push.
+- Kiểm tra base có scaffold và branch/PR trong context; reuse nhánh triển khai phù hợp. Nhánh ban đầu `feat/air-quality-lakehouse` đã có PR#1 merged; phần tiếp theo `feat/lakehouse-ml-completion`/PR#2 cũng đã merge. Tạo nhánh đóng góp mới từ main hiện tại theo CONTRIBUTING.md. Nếu PR cũ đã đóng, tạo nhánh mới từ main hiện tại và giữ các thay đổi đã kiểm chứng; không rewrite lịch sử đã push.
 - Commit nhỏ có ý nghĩa (`feat:`, `fix:`, `test:`, `docs:`, `chore:`), xem diff/check secret/test phù hợp, stage đúng file; giữ thay đổi ngoài nhiệm vụ của người dùng.
 - Push checkpoint đã kiểm chứng, tạo draft PR khi có implementation review được và cập nhật mô tả theo trạng thái cuối. Attach PR vào chat nếu công cụ hỗ trợ. Không tự merge, force-push, xóa branch hoặc rewrite lịch sử đã push.
 - Không commit `.env`, credentials, crawl lớn, model binary, volume/cache/raw logs. Theo dõi env example, fixture nhỏ đã làm sạch, lock, dashboard config, báo cáo gọn. Gắn kiểm chứng với commit và ghi rõ nếu working tree dirty.

@@ -8,6 +8,7 @@ Hoàn thành Lab01/02; Docker Desktop chạy, khoảng 8GiB RAM engine và đủ
 
 ```powershell
 .venv/Scripts/python.exe -m air_quality.cli start --services kafka minio catalog postgres trino superset
+docker compose --env-file .env -f infra/compose.yaml --profile jobs build spark
 .venv/Scripts/python.exe -m air_quality.cli smoke
 .venv/Scripts/python.exe -m air_quality.cli query 'SELECT * FROM iceberg.validation.smoke'
 ```
@@ -18,7 +19,7 @@ Smoke ghi một hàng bằng Spark và đọc lại bằng Trino; chỉ import p
 
 ## Đưa dữ liệu thật đã thu qua Kafka
 
-Sau khi có `data/history-180d.jsonl` từ backfill:
+Tạo `data/history-180d.jsonl` theo bước4 của [SETUP](../docs/SETUP.md), với `--sink jsonl --output data/history-180d.jsonl`; file không có sẵn trong Git. Backfill mặc định sink Kafka không tạo file này. Sau khi JSONL đã hoàn tất và chưa mở continuous processor:
 
 ```powershell
 .venv/Scripts/python.exe -m air_quality.cli drain --input data/history-180d.jsonl --run-name history-to-kafka

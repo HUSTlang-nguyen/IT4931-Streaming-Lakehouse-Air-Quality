@@ -1,6 +1,6 @@
 # Kế hoạch triển khai và nghiệm thu
 
-Trạng thái: các lát cắt pipeline, dashboard, ML và thực nghiệm đã chạy; các tiêu chí đã có bằng chứng, bàn giao trong draft PR#2. [Prompt độc lập](GOAL_PROMPT.md) quy định Goal khi người dùng bắt đầu; [context](docs/IMPLEMENTATION_CONTEXT.md) ghi trạng thái thực tế.
+Trạng thái: các lát cắt pipeline, dashboard, ML và thực nghiệm đã chạy; các tiêu chí đã có bằng chứng, đã bàn giao qua PR#2 và merge vào main. [Prompt độc lập](GOAL_PROMPT.md) quy định Goal khi người dùng bắt đầu; [context](docs/IMPLEMENTATION_CONTEXT.md) ghi trạng thái thực tế.
 
 ## P0 — Scaffold (lượt chuẩn bị)
 
@@ -56,8 +56,12 @@ Trạng thái: các lát cắt pipeline, dashboard, ML và thực nghiệm đã 
 - [x] Partition pruning có query plan/scan evidence; compaction có file count/size và kết quả query; time travel đối chiếu snapshot.
 - [x] Benchmark ghi commit/dataset/config/lệnh/số lần đo/giới hạn; dữ liệu nhân bản tách riêng, không cam kết tăng tốc ở quy mô nhỏ.
 - [x] Labs gọi code thật và đã chạy; walkthrough và 6 đoạn code thuyết trình khớp phiên bản cuối.
-- [x] README, context/log, draft PR#2 và demo hoàn chỉnh; không merge PR.
+- [x] README, context/log, PR#2 đã merge bởi maintainer; demo hoàn chỉnh. Agent không tự merge.
 
 ## Quy tắc hoàn thành
 
 Chỉ hoàn thành Goal khi P1–P6 có bằng chứng. Thiếu key/API, semantic khoảng đo chưa rõ hoặc dữ liệu ML không đủ là blocker của tiêu chí liên quan; tiếp tục phần độc lập. Scaffold, fixture pass hoặc budget cạn không đồng nghĩa hoàn thành hệ thống.
+
+## Sau nghiệm thu
+
+Onboarding/contribution xem [SETUP](docs/SETUP.md), [CONTRIBUTING](CONTRIBUTING.md) và [BACKLOG](docs/BACKLOG.md). Checklist P0–P6 là kết quả lần triển khai trước, không chứng minh một máy mới đã bootstrap Docker thành công.

@@ -1,64 +1,48 @@
 # Air Quality Streaming Lakehouse
 
-Python/PySpark phân tích PM2.5, PM10 tại ĐHBK và Công viên Nhân Chính, Hà Nội. Hai điểm quan trắc không đại diện toàn thành phố.
+Python/PySpark phân tích PM2.5, PM10 tại ĐHBK và Công viên Nhân Chính, Hà Nội; RF MLlib dự báo PM2.5 một giờ tiếp theo. Hai điểm quan trắc không đại diện toàn thành phố.
 
-**Đã chạy:** OpenAQ → Kafka → Spark → Iceberg/MinIO → Trino → Superset. Lịch sử nguồn 180 ngày có 202.041 bản ghi raw/hourly; Silver được đối chiếu tại snapshot cụ thể. Restart giữ nguyên dữ liệu, Silver không trùng khóa. RF/persistence, operational forecast và benchmark Iceberg đã chạy; xem [context](docs/IMPLEMENTATION_CONTEXT.md) để biết checkpoint mới nhất.
+Bản triển khai đã merge qua [PR #2](https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality/pull/2). Pipeline OpenAQ → Kafka → Spark → Iceberg/MinIO → Trino → Superset đã chạy trên máy phát triển; 25 unit và 14 Spark/Iceberg tests pass tại checkpoint đó. Báo cáo nguồn/ML/restart/benchmark trong Git là bằng chứng lịch sử, không phải dữ liệu/model được tải xuống khi clone.
 
-## Chạy trên Windows / PowerShell
+## Contributor bắt đầu ở đây
 
-Cần Docker Desktop Linux engine khoảng 8 GiB RAM, Python host3.11+ và Git. Spark chạy trong container Python 3.11, không cài Java/Spark lên host.
+1. [SETUP từ clone mới](docs/SETUP.md): điều kiện, build/smoke, tự thu JSONL, đối chiếu Silver, train/dashboard và vận hành live. Windows/PowerShell là hướng dẫn chuẩn; Python host3.11+, Docker Linux engine khoảng8GiB RAM.
+2. [CONTRIBUTING](CONTRIBUTING.md): nhánh/PR, chuẩn Python và comment tiếng Việt, kiểm thử theo thay đổi, cập nhật log/context.
+3. [BACKLOG](docs/BACKLOG.md): việc còn mở và tiêu chí nhận việc. Fresh Docker bootstrap trên máy riêng còn cần kiểm chứng; xem [báo cáo onboarding](artifacts/reports/contributor-onboarding.md).
 
 ```powershell
+git clone https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality.git
+Set-Location IT4931-Streaming-Lakehouse-Air-Quality
 python -m venv .venv
 .venv/Scripts/python.exe -m pip install -e ".[dev]"
-Copy-Item .env.example .env
-# Điền OPENAQ_API_KEY trong .env bằng editor, không đưa key vào lệnh hoặc Git.
-.venv/Scripts/python.exe -m air_quality.cli start
-.venv/Scripts/python.exe -m air_quality.cli status
-# Không chạy hai Collector API nặng cùng key ở host và container.
-docker compose --env-file .env -f infra/compose.yaml --profile pipeline stop collector
-.venv/Scripts/python.exe -m air_quality.cli backfill --run-name history-180d
-.venv/Scripts/python.exe -m air_quality.cli start --services collector --no-build
-.venv/Scripts/python.exe -m air_quality.cli dashboard
-```
-
-`start` tạo các credential local còn trống, giữ credential đã có, build image pinned và mở continuous Collector/processor. Lần đầu build MinIO source/Spark có thể lâu. Có thể chỉ mở core bằng `start --services kafka minio catalog postgres trino superset` nếu chưa có API key. Trong khi lịch sử được tải, các bảng chưa đầy đủ; kiểm tra báo cáo coverage thay vì chờ count ước lượng.
-
-Dashboard: [Superset local](http://localhost:18088/superset/dashboard/air-quality-hanoi/). Tài khoản/password xem `.env` local bằng editor; không dùng credential mẫu chung. Trino: localhost:18080; Kafka external: localhost:19092. Ports chỉ bind loopback.
-
-```powershell
-# Dừng processor khi chạy Spark job nặng để phù hợp RAM laptop; checkpoint được giữ.
-docker compose --env-file .env -f infra/compose.yaml --profile pipeline stop processor
-.venv/Scripts/python.exe -m air_quality.cli train
-.venv/Scripts/python.exe -m air_quality.cli predict
-.venv/Scripts/python.exe -m air_quality.cli benchmark
-.venv/Scripts/python.exe -m air_quality.cli start --services processor --no-build
 .venv/Scripts/python.exe -m air_quality.cli test
-# Tạm dừng processor trước test --integration vì tests dùng JVM riêng.
-.venv/Scripts/python.exe -m air_quality.cli stop
 ```
 
-`stop` giữ volumes; không chạy `down -v`. `predict` phát hành theo lần gọi; không có scheduler ML nền. Gọi lại sau một giờ hoặc qua lịch vận hành do người dùng thiết lập. Backtest được ghi riêng operational, không xem dữ liệu lịch sử tải hôm nay là dữ liệu đã có trong quá khứ. Xem [Lab 06](labs/06-forecasting.md).
+Đoạn trên chỉ kiểm package/unit. Làm tiếp SETUP để dựng pipeline; không cần cài Java/Spark trên host. `.env`, API key, raw/JSONL, models, checkpoints và volumes do bạn tự tạo. Credential Superset sinh trong `.env` của máy bạn; không dùng password máy tác giả. Compose dùng project/cổng cố định nên một checkout vận hành trên mỗi Docker engine.
 
-## Thiết kế và bằng chứng
+## Kiến trúc và cách học
 
 ```text
-OpenAQ v3 → Collector → Kafka → Spark Structured Streaming
-                                  ↓
-                       Iceberg Bronze / Silver / Gold trên MinIO
-                                  ↓                 ↓
-                         Trino → Superset      Spark MLlib RF
-                                  ↑                 ↓
-                                  └──── predictions/metrics
+OpenAQ v3 → Python Collector → Kafka → Spark Structured Streaming
+                                         ↓
+                              Iceberg Bronze / Silver / Gold trên MinIO
+                                         ↓                 ↓
+                                Trino → Superset      Spark MLlib RF
+                                         ↑                 ↓
+                                         └──── predictions / metrics
 ```
 
-Gold dùng mean nguồn `/hours`, không tự bình quân raw timestamp 5 phút vì raw báo interval một giờ. Thiếu giữ null, UTC lưu/giờ Việt Nam hiển thị. RF dự báo PM2.5 một giờ tiếp theo từng trạm, so persistence cùng mẫu; không có AQI, dự báo khí hay khuyến cáo sức khỏe.
+Gold/ML dùng mean nguồn `/hours`; không tự bình quân raw cadence5phút vì nguồn báo interval1h chưa được giải thích về mặt vật lý. Missing/invalid giữ null; lưu UTC, hiển thị giờ Việt Nam. Backtest hồi cứu snapshot khác operational forecast. RF chưa thắng persistence nhất quán; `predict` chạy theo lần gọi, chưa có scheduler ML nền. Không có AQI hoặc khuyến cáo sức khỏe.
 
 - [Kiến trúc](docs/architecture.md), [dictionary](docs/data-dictionary.md), [walkthrough](docs/code-walkthrough.md).
-- [Labs 01–07](labs/README.md), [demo](docs/demo.md), [code lên slide](docs/presentation-guide.md).
-- [Báo cáo nhỏ](artifacts/README.md), [kế hoạch](IMPLEMENTATION_PLAN.md), [context](docs/IMPLEMENTATION_CONTEXT.md), [nhật ký](docs/AGENT_WORK_LOG.md).
-- [Goal prompt độc lập](GOAL_PROMPT.md) và [quy tắc agent](AGENTS.md). Goal active thì tiếp tục, không tạo trùng.
+- [Labs01–07](labs/README.md), [demo khi đã có dữ liệu](docs/demo.md), [6đoạn code cho slide](docs/presentation-guide.md).
+- [Báo cáo nghiệm thu](artifacts/reports/end-to-end-summary.md), [chỉ mục evidence](artifacts/README.md), [kế hoạch đã nghiệm thu](IMPLEMENTATION_PLAN.md).
+- [Context tiếp tục công việc](docs/IMPLEMENTATION_CONTEXT.md), [nhật ký STEP](docs/AGENT_WORK_LOG.md), [AGENTS](AGENTS.md).
 
-## GitHub
+Dashboard sau setup: [Superset local](http://localhost:18088/superset/dashboard/air-quality-hanoi/). `stop` giữ dữ liệu; không `down -v`/prune. Dừng processor trước Spark job train/test integration/benchmark riêng để phù hợp RAM; SETUP có thứ tự và cách resume.
 
-[Repository](https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality), nhánh `feat/lakehouse-ml-completion`, [draft PR #2](https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality/pull/2). Không tự merge. Chỉ commit code, config, lock, fixture/báo cáo nhỏ sạch secret; raw/model/checkpoint/cache local được ignore.
+## Git và Goal
+
+[Repository](https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality), base đóng góp là `main`; PR #1/#2 đã merge. Kiểm branch/PR hiện tại trước khi tiếp tục checkpoint cũ. Mở nhánh mới cho thay đổi mới, agent không tự merge/force-push/xóa branch hoặc volume.
+
+[GOAL_PROMPT](GOAL_PROMPT.md) lưu đặc tả lần triển khai đã hoàn tất. Contributor đọc để hiểu phạm vi; không cần tạo lại Goal đó hoặc tự triển khai toàn backlog. Khi dùng agent cho yêu cầu mới, bắt đầu từ context và công việc cụ thể được giao.

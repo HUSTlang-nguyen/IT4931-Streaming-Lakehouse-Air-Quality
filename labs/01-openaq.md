@@ -2,7 +2,7 @@
 
 ## Mục tiêu và prerequisite
 
-Hiểu location → sensor → measurement, thời gian đo khác thời gian thu thập, và raw khác hourly nguồn. Cần Python >=3.10, truy cập mạng và API key của bạn. Runtime Spark chưa được chốt; lab này chỉ dùng Collector Python.
+Hiểu location → sensor → measurement, thời gian đo khác thời gian thu thập, và raw khác hourly nguồn. Onboarding dùng Python host3.11+, truy cập mạng và API key của bạn. Runtime Spark3.5.6 đã pin trong container; lab này chỉ dùng Collector Python. Xem [SETUP](../docs/SETUP.md) để dựng toàn hệ thống.
 
 ## Chuẩn bị trên PowerShell
 

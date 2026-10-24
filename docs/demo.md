@@ -17,16 +17,9 @@ Docker Linux engine khoảng8GiB, cổng project không xung đột. Cài packag
 
 ## Thu lịch sử từ máy mới
 
-```powershell
-.venv/Scripts/python.exe -m air_quality.cli start
-docker compose --env-file .env -f infra/compose.yaml --profile pipeline stop collector
-.venv/Scripts/python.exe -m air_quality.cli backfill --run-name demo-history-180d
-.venv/Scripts/python.exe -m air_quality.cli start --services collector --no-build
-```
+Làm trọn [SETUP](SETUP.md) thay vì dùng lại source/model/snapshot ID của máy tác giả. Hướng dẫn đó cố định bounds180ngày tròn giờ, tạo JSONL local, profile, drain/process tới khi kết thúc và đối chiếu Silver trước khi train. Git không chứa lịch sử/model/volumes đầy đủ. Sau khi có dữ liệu/model, quay lại luồng demo ở trên.
 
-Bounds được cố định trong checkpoint của run-name. Không dùng số lịch sử tháng4–10/2026 làm kỳ vọng cho run mới ở ngày khác. API có rate limit và gaps, tải lịch sử có thể dài hơn buổi demo. Với source JSONL đã có, drain giữ mode backfill, không cần gọi API lại (Lab03).
-
-Dừng processor trước Spark train/test/benchmark riêng để vừa RAM, rồi `start --services processor --no-build` resume. Collector có thể tiếp tục ghi Kafka. Test offline không cần API; `test --live` mới gọi OpenAQ thật.
+Không yêu cầu run mới bằng202.041 hàng hoặc cùng accuracy với báo cáo cũ. Khi dùng Spark job riêng trên máy8GiB, dừng processor trước, resume sau; không chạy writer live thứ hai.
 
 ## Replay lịch sử
 

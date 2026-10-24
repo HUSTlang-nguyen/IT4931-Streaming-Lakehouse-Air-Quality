@@ -1,6 +1,6 @@
 # Lộ trình lab
 
-Các bài gọi code production Python/PySpark, không sao chép pipeline vào notebook.
+Người mới hoàn thành [SETUP](../docs/SETUP.md) trước để tự có runtime/dữ liệu/model. Các bài gọi code production Python/PySpark, không sao chép pipeline vào notebook.
 
 | Bài | Nội dung / bằng chứng |
 |---|---|
