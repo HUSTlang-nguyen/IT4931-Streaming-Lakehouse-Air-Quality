@@ -1,54 +1,40 @@
-# Kiến trúc và ranh giới thành phần
+# Kiến trúc đã triển khai
 
-**Trạng thái:** thiết kế dự kiến, chưa triển khai. File này giải thích kiến trúc; [context](IMPLEMENTATION_CONTEXT.md) ghi mức độ hiện thực và quyết định còn mở.
+OpenAQ v3 → Python Collector → Kafka → Spark Structured Streaming → Iceberg Bronze/Silver/Gold trên MinIO → Trino → Superset. Spark MLlib đọc Gold snapshot và ghi predictions/metrics vào cùng catalog.
 
-## Luồng dự kiến
+## Thành phần và lưu bền vững
 
-```mermaid
-flowchart LR
-    OA[OpenAQ v3] --> C[Python Collector]
-    C --> K[Kafka]
-    K --> S[PySpark]
-    S --> B[Iceberg Bronze trên MinIO]
-    B --> SI[Silver]
-    SI --> G[Gold]
-    G --> T[Trino]
-    T --> U[Superset]
-    G --> M[Spark MLlib]
-    M --> P[Bảng dự báo Iceberg]
-    P --> T
-    CAT[Iceberg REST catalog] --- S
-    CAT --- T
-```
+| Thành phần | Vai trò / nơi lưu |
+|---|---|
+| Collector | Pagination, retry/rate limit, archive trước ACK; state SQLite volume collector_state; raw pages ở data/ |
+| Kafka 3.9.1 | Hai partitions, ACK broker, log volume kafka_data; retention 720 giờ |
+| Spark 3.5.6 | Python 3.11.13, Java 17.0.20.1, local[2], Iceberg 1.9.2; jobs và continuous processor cùng code |
+| REST catalog 1.6.0 | JdbcCatalog SQLite WAL/busy_timeout30s /catalog/catalog.db trên catalog_data; UID1000, init owner thư mục |
+| MinIO | Source build pinned release/commit; minio_data giữ S3 warehouse objects, metadata/data Iceberg |
+| Trino 476 | Native S3 + REST catalog chung Spark, query HTTP; không chép measurements vào PostgreSQL |
+| Superset 4.1.2 | Dashboard đọc Trino; PostgreSQL 16.9 giữ metadata, credentials local sinh ngẫu nhiên |
+| MLlib | Model binary trên model_data; manifest config/snapshot/split/metrics; forecast/actual Iceberg |
 
-Bronze/Silver/Gold là các lớp bảng logic. MinIO giữ object; catalog giữ tham chiếu metadata bảng. PostgreSQL sẽ phục vụ metadata của Superset và dịch vụ cần nó; backend catalog chưa chốt. Không mặc định PostgreSQL là nơi lưu measurements.
+REST view endpoints tắt trong Trino476 vì backend1.6.0 không tương thích view API; bảng Iceberg và virtual datasets Superset vẫn hoạt động. WAL cho phép đọc/commit đồng thời; timeout30s hữu hạn đã chạy lại test forecast/actual thành công.
 
-## Trách nhiệm và I/O
+SQLite catalog phù hợp một máy học tập, tránh thêm PostgreSQL catalog server trong ngân sách RAM. Đây không phải kiến trúc HA. Spark local[2] xử lý thật; không dựng worker rỗng chỉ để minh họa. Các daemon core dùng khoảng 4 GiB khi nhàn; dừng processor khi train/benchmark/test JVM riêng để không vượt Docker khoảng 7,46 GiB.
 
-| Thành phần | Đầu vào → đầu ra | Trách nhiệm |
-|---|---|---|
-| config | env/cấu hình → cấu hình đã kiểm tra | Defaults, secrets được che, lỗi cấu hình rõ ràng |
-| contracts | metadata/payload → schema/quy tắc | Định danh, thời gian, đơn vị, ingest mode |
-| collector | API/khoảng thời gian → event Kafka | Pagination, rate limit, retry, checkpoint, live/backfill/replay |
-| processing | event/raw → Bronze/Silver/Gold | Giữ gốc, chuẩn hóa, MERGE, quality, tính lại phần chịu ảnh hưởng |
-| forecasting | chuỗi giờ hợp lệ → model/metrics/predictions | Features causal, split thời gian, baseline, model version |
-| observability | trạng thái job → log/metrics đã làm sạch | Freshness, gap, tiến độ, lỗi, evidence |
-| Trino/Superset | bảng Iceberg → query/dashboard | Truy vấn, hiển thị, cấu hình tái lập |
+## Luồng và transaction
 
-## Invariant dữ liệu
+`Collector.collect_window` giữ metadata liên kết sensor, raw payload và request range. Sau ACK mới tăng checkpoint. Retry có thể tạo lại Kafka message; `merge_bronze` chống trùng event_id và `merge_silver` chống trùng business key. Newest ingested_at thắng, event_id là tie-break ổn định. Raw/hours riêng `series_kind`.
 
-1. Một measurement là một chỉ số của một sensor; muốn so sánh PM2.5/PM10 phải ghép có ý thức theo trạm/thời gian.
-2. Event time khác ingested_at. UTC để lưu, Asia/Ho_Chi_Minh để hiển thị; không dùng timestamp không timezone.
-3. Bronze giữ gốc; Silver có thể chạy lại an toàn theo sensor/period_start/period_end. Quy tắc nguồn sửa số đo và tie-break sẽ chốt từ mẫu thật ở P1.
-4. Late/corrected data làm cập nhật phần Gold chịu ảnh hưởng; watermark không phải cơ chế dedup duy nhất. Replay có namespace riêng.
-5. Không biến thiếu thành 0; coverage/freshness theo sensor. Không nhầm metadata trạm mới với mọi sensor mới.
-6. `period.interval` một giờ và nhịp timestamp 5 phút đang chưa được giải thích. Tạm chặn tổng hợp trung bình/chuỗi giờ ML, không chặn lưu gốc hay khảo sát.
-7. Features ML chỉ dùng thông tin có tại issued_at; backtest lịch sử tách operational forecast, không giả định ingested_at lịch sử.
+`foreachBatch` không có transaction xuyên nhiều bảng. Nếu crash giữa Silver và Gold, checkpoint chưa commit, microbatch retry MERGE idempotent rồi refresh Gold. `FileLock` giữ một writer/namespace. Full Gold overwrite bằng một Iceberg snapshot mỗi bảng, không truncate rồi append. Với hai trạm/180 ngày, chọn correctness và dễ học; chưa tối ưu cho hàng tỷ hàng.
 
-## Lưu trữ và kiểm chứng dự kiến
+Gold `/hours` dùng giá trị mean nguồn đã kiểm contract; raw reported interval1h/cadence5 phút vẫn chưa đủ giải thích vật lý. Grid tất cả sensor × giờ giữ missing/invalid null. Daily tính mean giờ hợp lệ theo ngày Việt Nam; giờ kết thúc 00:00 thuộc ngày trước; luôn có count/24 và window_bins cho ngày biên.
 
-Chọn partition theo mẫu query và dữ liệu thật sau P1; không phân vùng theo sensor một cách máy móc ở dữ liệu nhỏ. Thực nghiệm pruning dựa query plan/scan; compaction dựa file count/size và correctness; time travel dựa snapshot query trước/sau. Giữ snapshot cần cho bằng chứng, không tự expire snapshot hoặc xóa volume.
+## ML và tính sẵn có
 
-## Những gì chưa chốt
+Self-join theo timestamp để có current/lag1/2/3/24; inner join loại thiếu. Nhãn là giờ tiếp theo, không đi vào vector. Ranh giới thời gian 70/15/15, purge label vượt ranh; chỉ fit train, chọn depth qua validation, test giữ lại. Persistence cùng hàng đủ features để so sánh công bằng; đây là tập con các giờ có dữ liệu, không đại diện toàn bộ giờ thiếu.
 
-Version matrix và lock, catalog backend, Kafka topic/schema cụ thể, bảng/partition DDL, correction tie-break, phương pháp tạo chuỗi giờ, cổng/tài nguyên và CLI concrete names. Goal phải khảo sát, chọn, kiểm chứng và ghi quyết định trong log/context trước khi coi đây là triển khai thực tế. Không cần chọn các chi tiết này để hoàn thành scaffold.
+Backtest dùng snapshot hiện tại của lịch sử, không giả availability quá khứ. Operational kiểm ingested_at của mọi input <= issued_at, model đã train trước issue, target còn tương lai. Thiếu/stale thì báo trạng thái, không ép tạo forecast. `predict` là job theo lần gọi, không daemon scheduler; actual được refresh mỗi lần gọi.
+
+## Reproducibility và giới hạn
+
+Compose images có tag/digest, Python runtime và Java jars có lock; MinIO build theo source commit vì prebuilt upstream không truy cập được. Model/báo cáo giữ code revision/dirty và Iceberg snapshot. Secret chỉ qua .env ignored, không dump Compose config. Docker ports bind loopback; không triển khai internet/auth phân quyền đa người dùng.
+
+Historical reconciliation giữ snapshot IDs nên counts không đổi khi live tăng. Restart giữ volume/checkpoint, không xóa dữ liệu. Pruning/compaction/time travel dùng namespace experiment riêng với bản sao không nhân bản hàng; không expire snapshots. Báo cáo benchmark ghi cache/local scale và không suy ra tăng tốc chung.

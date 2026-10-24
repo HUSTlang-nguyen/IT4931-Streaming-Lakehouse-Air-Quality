@@ -1,54 +1,38 @@
 # Context triển khai hiện tại
 
-## Checkpoint
+Checkpoint STEP-016, ngày24/10/2026. Goal toàn phạm vi GOAL_PROMPT.md đang chờ bàn giao Git cuối, không tạo Goal trùng. Repository con IT4931-Streaming-Lakehouse-Air-Quality; không dùng Git root thư mục cha.
 
-- Cập nhật `2026-10-24T15:53:08+07:00`, đồng bộ STEP-010; Goal active `start goal implement`, phạm vi đầy đủ theo [GOAL_PROMPT](../GOAL_PROMPT.md).
-- Git root repository con `IT4931-Streaming-Lakehouse-Air-Quality`, remote GitHub giữ nguyên; nhánh `feat/air-quality-lakehouse` từ `81ab9f2f0163a6cf600b1c56e66ae00a26d68faf`. Collector checkpoint `301ab9ebb934ff4ff6644c6f92adb43ac40880ad` đã commit/push, draft PR #1 đã attach. Profiler và MinIO build đã kiểm chứng ở mức mô tả bên dưới, đang ghi checkpoint tiếp; đối chiếu git status khi tiếp tục.
-- P0 xong; P1/P3 tiến triển; P2–P6 chưa hoàn thành.
+## Git và công việc còn lại
 
-## Đã code và đã kiểm chứng
+- Nhánh hiện tại feat/air-quality-lakehouse; code local b7a544a và fix ba600f8 đã commit, docs/evidence đang chờ commit.
+- PR#1 đã MERGED bên ngoài tác vụ lúc09:08UTC, main78fffbb tree bằng c5ab9fa. Không cập nhật/reopen/merge PR đã đóng. Tạo feat/lakehouse-ml-completion từ origin/main sau commit docs, cherry-pick3commits local mới, giữ nhánh cũ; push và tạo draft PR mới/attach. Không forcepush/rewrite lịch sử đã push/delete branch.
+- Sau push/PR: cập nhật context/log/plan checkbox Git và final report, commit/push metadata. Chỉ complete khi Git bàn giao xong. Các chức năng bắt buộc đã có bằng chứng dưới đây.
 
-- [Settings](../src/air_quality/config/settings.py): secret repr-hidden, explicit .env, sensors, defaults, input validation.
-- [Events](../src/air_quality/contracts/events.py): UTC, fixed windows, envelope v1 với series_kind measurements/hours và provenance.
-- Collector [HTTP](../src/air_quality/collector/openaq.py), [state SQLite](../src/air_quality/collector/state.py), [service](../src/air_quality/collector/service.py), [publishers](../src/air_quality/collector/publisher.py), [CLI](../src/air_quality/cli.py). Raw archive trước publish, checkpoint sau ACK, retry dùng lại archive, sink-specific job identity.
-- 21 unit pass (Collector+coverage); 4 live contract pass, pip editable install và pip check sạch. XML ở artifacts/local, [báo cáo nhỏ](../artifacts/reports/collector-checkpoint.md).
-- Lab 01/02 đã có code/lệnh thật cho API/JSONL; Kafka phần lab chưa được kiểm chứng. Chưa có Spark/ML/dashboard/Compose.
+## Đã chạy thật
 
-## Tiến trình / artifact cần kiểm tra trước khi thao tác
+- OpenAQ4sensors ĐHBK13502154/13502152, Nhân Chính13502151/13502153. Source180ngày202.041 unique raw+hours, bounds2026-04-27..2026-10-24UTC; source coverage91,597–93,981%, hourly gap87h. data/history-180d.jsonl/raw/metadata/key local ignored.
+- Kafka ACK202.041, Structured Streaming11batches, historical Bronze/Silver202.041/hourly17280(missing1184)/daily724/freshness8, fixed snapshots trong lakehouse-history-reconciliation.json. Live đã tăng, không ép current count bằng lịch sử.
+- Restart: counts trước/sau/resume bằng nhau, Silver duplicate0. Replay riêng168public source events, original_ingested_at preserved168, Bronze/Silver168/hourly672; không trộn live.
+- Unit25pass, Spark13pass/4live skip ở tests-final.log và tests-spark.xml;4OpenAQ contract pass riêng trước đó. Cases: retry/pagination/ACK, duplicate/correction/late/gap/invalid/UTC/replay/schema evolution, lag availability/label purge/null metrics/stale/model issue/retry actual enrichment.
+- RF MLlib từng trạm, snapshot5061425689190597954, version rf-f0077526710fd81e,30trees seed42, depth8 chọn qua validation. ĐHBK test555 RF MAE11.3942/RMSE16.6638 vs persistence11.7468/15.0972; Nhân Chính649 RF6.7809/9.4208 vs persistence5.7281/7.2831. Model binary/manifest trên model_data; ml-evaluation.json giữ splits/ranges/config/importances/provenance.
+- Operational issue10:06:41UTC target11:00UTC,2trạm dùng source hours10:00, forecast đầu tiên giữ nguyên khi gọi lại. forecast-idempotency.json, operational-forecast.json. Actual chưa có giữ null, enrich mỗi predict; không có ML scheduler nền mặc định.
+- Dashboard8charts,17nativeYAML files, export/import verified UUID layout8unique nodes, chart APIs200, screenshot output/playwright/dashboard-final.png đã kiểm. Browser Playwright session airquality riêng task, auth state ignored, không print cookies/token.
+- Benchmark experiment_20261024_095728 copy202537 hàng thật không nhân bản,28→7files/10515307→9327132bytes, tháng7chạm4→1files, exceptAll0/time travelSpark+Trino202537; clientmedian2.178→2.204s, không claim tăng tốc. Giữ snapshots/experiment failed đầu để audit.
 
-- **Không còn tiến trình dài đang chạy ở checkpoint này.** MinIO build69048 exit0; pinned rebuild exit0; image air-quality-minio:2025-10-15 đã chạy --version và xác nhận LICENSE. Log artifacts/local/minio-build*.log. S3/health/catalog chưa kiểm chứng; xem báo cáo minio-source-build.md.
-- Backfill21843 và profiler67325 đã exit0. Full source JSONL `data/history-180d.jsonl`, raw page archive `data/raw/`, SQLite `checkpoints/collector.sqlite` đều ignored. Run hanoi-180d-20261024 cố định 2026-04-27..2026-10-24 UTC.
-- [Coverage](../artifacts/reports/source-coverage.json): **202.041 records unique** gồm raw+hours bốn sensor; [báo cáo](../artifacts/reports/backfill-180d.md). Hour bins: PM2.5 ĐHBK3957, Nhân Chính4042; PM10 ĐHBK4060, Nhân Chính4037 /4320 expected. Gap hourly87h. Không nhầm với Silver count hay accuracy.
-- Các session Docker cũ và live test đều terminal. PR draft https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality/pull/1; chưa merge.
+## Kiến trúc / điểm đọc code
 
-## Dữ liệu / quyết định
+Compose project air-quality-lakehouse: Kafka3.9.1, MinIO source pinned release2025-10-15/commit9e49d5e, REST1.6.0 SQLite WAL/busy_timeout30s volumeUID1000, PostgreSQL16.9 metadata Superset4.1.2, Trino476. Runtime Python3.11.13/Java17.0.20.1/Spark3.5.6/Iceberg1.9.2/Kafka connector3.5.6/NumPy1.26.4 đã chạy; locks và digests trong requirements/infra. Trino view-endpoints=false vì REST viewAPI1.6 lỗi, vẫn dùng Iceberg tables/SQL virtual datasets.
 
-Hai trạm và sensor theo dictionary. Poll 300s, overlap24h, reconcile7days/24h; ingest UTC/display Asia/Ho_Chi_Minh. Key ở .env local ignored, không đọc/in key khi chỉ kiểm tra trạng thái.
+processing/transforms,tables,jobs: Bronzeevent_id, Silverkey(sensor_id,series_kind,period_start,period_end), newest ingested_at/event_id, additive nullable schema; atomic full Gold refresh từng bảng, foreachBatch retry phục hồi giữa Silver/Gold. FileLock một writer/namespace. forecasting/features,model: timestamp joins/purge70/15/15/validation/test/persistence/availability. dashboard.py: API provision và chart_uuids cho native import. operations.py/cli.py unified commands; observability/benchmark.py+processing/experiments.py đo thật. scripts/export_presentation_snippets.py và verify_repository.py đã chạy.
 
-/hours là nguồn mean chính thức; live contract kiểm period1h/boundary/unique/parameter và lượng tử hóa3sig so summary.avg. Target ML/Gold sẽ là source-hourly series, không tự bình quân raw5phút. Raw interval vật lý vẫn chưa rõ, không tuyên bố resolved. Coverage nguồn>100% được giữ raw và không dùng trực tiếp. Khóa Silver phải gồm sensor_id, series_kind, period_start/end trong namespace; correction và DDL chi tiết chưa chốt.
+## Quyết định và giới hạn
 
-RF từng trạm t+1h, lag1/2/3/24h theo giờ thật, train/validation/test70/15/15 chronological, không leakage, baseline cùng mẫu, backtest tách operational. Chưa có ML.
+Gold/ML dùng source /hours mean đã kiểm contract; không average raw cadence5min vì reported interval1h vật lý chưa rõ. Missing/invalid null, UTC lưu/VN hiển thị, daily count/24/windowbins; hai trạm không đại diện Hà Nội. Backtest final snapshot không giả historical ingestion availability. RF không thắng baseline nhất quán. Local single-node không HA, benchmark nhỏ có cache/HTTP overhead.
 
-## Môi trường / Docker
+## Trạng thái vận hành / tiếp tục
 
-Python host3.13.12, .venv editable với dependencies pin pyproject; chưa khóa Python/Java/Spark runtime. Docker28.4.0 đã chạy, 16CPU/~7,46GiB RAM engine, host~15,4GiB.
+8daemons đang chạy:7Docker healthchecks pass, catalogHTTP200, init exited0. Collector/processor continuous đã resume sau jobs, Silver duplicate0. Không còn Spark job dài. Docker RAM khoảng7,46GiB: dừng processor trước train/test integration/benchmark riêng, sau đó start --services processor --no-build. Không writer live thứ hai. Khi backfill API nặng trên host, pause Collector container vì SQLite limiter Linux riêng; resume sau đó. Predict theo lần gọi, source stale thì suppress, không đổi issued_at để ép forecast.
 
-Người dùng đã cho phép sửa lỗi khởi động Docker ngoài repo. Đã dừng Desktop, sao lưu `%LOCALAPPDATA%/Docker/run` thành `run.before-air-quality-20261024` sau unlink/reparse delete lỗi1920, tạo lại run và start thành công. Không xóa backup, không sửa settings/volumes/images.
+CLI: inspect/backfill/live/replay/profile/start/stop/status/query/drain/process/smoke/dashboard/train/predict/test/benchmark. Lệnh và demo trong README/labs/docs/demo.md. .env secrets local ignored; không dump Compose config. Người dùng đã cho phép sửa Docker socket ngoài repo, đã sửa trước đó và engine hoạt động; không sửa lại/xóa volumes. Stop giữ dữ liệu. Source/model/auth/raw logs không ở Git. Final-verification.json giữ source SHA256 và checks; reports cũ ghi revision/dirty đúng lúc chạy, không thay hash quá khứ bằng commit tương lai.
 
-Đã xác minh tags Python3.11.13-slim-bookworm, Kafka3.9.1, iceberg-rest1.6.0, Trino476, Superset4.1.2, PostgreSQL16.9-bookworm qua registry; digest ở data/discovery/image-manifests.json. **MinIO DockerHub và Quay tag thử trả401; đã chọn build source release chính thức** pin commit9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a, Go1.24.9, LICENSE giữ trong image. Build69048 đã exit0, binary Go1.24.9 chạy được; S3 compatibility chưa kiểm chứng. Tags khác mới được kiểm tra registry, chưa chứng minh runtime tương thích.
-
-## Lệnh hiện có
-
-- `.venv/Scripts/python.exe -m air_quality.cli --help` (inspect/backfill/live/replay). inspect default JSONL, không broker.
-- `.venv/Scripts/python.exe -m pytest tests -q --basetemp=artifacts/local/<unique-dir>`: offline skips live; basetemp phải là chỗ test riêng vì pytest có thể dọn.
-- Live: thêm --run-live, dùng chung limiter SQLite với backfill. Không --run-integration trừ khi stack đã sẵn sàng.
-- Có thêm CLI profile offline; chưa có start/train/predict/benchmark.
-
-## Bước tiếp theo cụ thể
-
-1. MinIO image đã build/version verified; kiểm S3/health qua Compose. Viết Compose project riêng, SQLite-persist REST catalog nếu driver phù hợp, PostgreSQL metadata Superset. Chốt/pin matrix sau chạy thật.
-2. Giới hạn RAM tổng phù hợp8GiB Docker; start Kafka/MinIO/catalog/Trino và build Python3.11/Java17/Spark3.5.6, Iceberg1.9.2 + Kafka connector3.5.6 (dự kiến, chưa verify).
-3. Cần cách publish archive đã tải qua Kafka giữ mode backfill (khác replay mode) để dùng dữ liệu đã thu mà không gọi lại API. Sau đó Bronze/Silver/Gold, ML/dashboard và P6.
-4. Coverage nguồn đã xong, cần đối chiếu Silver sau ingest. Commit/push profiler+docs và tiếp tục cập nhật draft PR #1, không merge. Ghi kết quả build thực trước khi claim runtime.
-
-[Nhật ký](AGENT_WORK_LOG.md), [kế hoạch](../IMPLEMENTATION_PLAN.md), [kiến trúc](architecture.md), [dictionary](data-dictionary.md) là chỉ mục tiếp tục. Kiểm Git/process/file thực tế trước khi tin trạng thái Markdown.
+[Nhật ký](AGENT_WORK_LOG.md), [kế hoạch](../IMPLEMENTATION_PLAN.md), [báo cáo](../artifacts/README.md), [demo](demo.md), [thuyết trình](presentation-guide.md). Kiểm Git/process/artifact thực tế trước khi tin status; cập nhật context tại chỗ, log append-only sau checkpoint.

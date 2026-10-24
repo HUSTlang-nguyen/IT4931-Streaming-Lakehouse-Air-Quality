@@ -121,3 +121,56 @@ Hash commit mới ghi ở STEP sau, tránh tự tham chiếu hash chứa chính 
 - File: .dockerignore, infra/minio/Dockerfile/README, artifacts/reports/minio-source-build.md; profiler report và code như STEP-008. Chưa test S3/object persistence/catalog.
 - Trạng thái: backfill nguồn/Collector đã có bằng chứng, dependency MinIO build đã có; toàn Goal vẫn active với P2–P6 còn việc. Các process dài trước đều terminal; không có process cần resume lúc ghi.
 - Bước tiếp: commit/push các checkpoint rồi dựng Compose project riêng và Spark/Iceberg, xử lý dữ liệu thật đã thu qua Kafka.
+
+## STEP-011 — 2026-10-24T16:45:35+07:00 — Stack Docker và Spark/Trino cùng catalog
+
+- Nền Git c5ab9fa đã push; working tree triển khai P2/P4/dashboard chưa commit lúc ghi.
+- Dựng Compose project air-quality-lakehouse: Kafka3.9.1, MinIO source build, REST catalog1.6.0 SQLite persist, PostgreSQL16.9 metadata Superset, Trino476, Superset4.1.2. Python3.11/Java17.0.20.1/Spark3.5.6/Iceberg1.9.2 runtime build thành công, lock Python/Java xuất từ image.
+- Lỗi đã tìm/sửa: catalog image UID1000 không ghi được volume root; init volume owner1000, không xóa DB/volume hoặc chạy catalog root. Job trước fail DNS khi catalog restart, sau readiness check/owner fix smoke ghi thật và Trino đọc cùng hàng thành công.
+- File: infra/compose.yaml, infra/spark/superset/trino, operations.py/session.py. Không dump env/credential vào log.
+- Bằng chứng: spark-smoke.json, runtime-build.log; core-start86202/runtime-build17433/smoke12444 đều terminal0.
+
+## STEP-012 — 2026-10-24T16:45:35+07:00 — Source→Kafka→Iceberg reconciliation và Spark quality tests
+
+- Drain source giữ ingest_mode backfill và event_id, Kafka ACK202.041 records; session41893 terminal0. Host unit25pass ở lần gần nhất (Collector/drain/coverage/operations), 4 API live pass ở checkpoint trước.
+- Structured Streaming availableNow session77874 terminal0, 11 micro-batches. Bronze=Silver=202.041; từng sensor/resource khớp source. Gold17.280 hourly bins, 1.184 missing null; daily724, freshness8. Reconciliation đã gắn snapshot IDs cụ thể và Trino time travel count để không nhầm với bảng live đang tăng.
+- Sáu integration tests Spark/Iceberg thật pass: duplicate/correction, late/gap/daily, invalid correction, quarantine missing period, UTC/unit, replay isolation. Lần đầu fixture offset monotonic bị Catalyst coi nondeterministic; sửa fixture thành offset input cố định như Kafka, không nới assertions.
+- File: processing/transforms/tables/jobs, collector/archive, tests/integration/test_lakehouse.py. Bằng chứng reports/lakehouse-history-reconciliation.json và local/tests-spark.xml. Test58712/reconciliation92754 terminal0.
+
+## STEP-013 — 2026-10-24T16:45:35+07:00 — Dashboard thật, native export/import và continuous pipeline
+
+- Python API provision database/datasets/5charts/layout idempotent. Snapshot Playwright xác nhận charts render, data APIs200, giờVN, nhãn tiếng Việt, số format rõ, gaps null. Sửa rolling range tới now vì Last7days mặc định chỉ ngày đã kết thúc.
+- Native export11YAML files sạch secret trong dashboards/export; ZIP ignored. import_native chạy OK, giữ UUID. Browser session airquality Chrome16680 đang mở để kiểm chứng; auth state/cookies chỉ ở output/playwright ignored, không in/log token.
+- Collector/processor continuous đã khởi động qua Compose, start45521 terminal0 nhưng containers là services đang sống. Collector checkpoint/limiter volume collector_state Linux riêng; không chạy manual heavy Collector host song song cùng key. Processor resume checkpoints/spark/live và heartbeat30s. Source mới đã vào freshness (PM2.5/PM10 có mốc riêng).
+- Runtime locked rebuild37744 đang export image ở quan sát gần nhất; cần poll đúng handle trước khi restart/bắt đầu ML. Thêm NumPy1.26.4 cho ML, Java/JAR SHA256 pin, dependency layers cache. Chưa train ML.
+- Bước tiếp: cập nhật docs/labs, verify restart persistence, commit/push stack; sau đó RF/persistence+metrics+prediction/dashboard, pruning/compaction, lab06/07 và presentation guide. Goal vẫn active đầy đủ.
+
+## STEP-014 — 2026-10-24T16:58:47+07:00 — Restart persistence và ML thật
+
+- Nền c5ab9fa, nhánh feat/air-quality-lakehouse; checkpoint stack/ML working tree chưa commit.
+- Runtime locked rebuild37744 terminal0, lock Python xuất lại có NumPy1.26.4. Restart19324 terminal0: stop core/start giữ volumes, trước/sau Bronze214381/Silver202537/hourly17316/daily724/freshness8 bằng nhau; sau processor resume vẫn bằng nhau, Silver duplicate keys0. Report restart-persistence.json.
+- ML feature tests84764 terminal0:5pass exact-hour lag/gap/availability/label/purge/metrics. Train34402 terminal0 trên Gold snapshot5061425689190597954: RF version rf-f0077526710fd81e, seed42,numTrees30, depth8 chọn bằng validation cho cả2 trạm, test giữ lại. Model binary ở model_data, manifest/predictions/metrics thật.
+- ĐHBK train/val/test2317/513/555: RF MAE11.3942 RMSE16.6638; persistence MAE11.7468 RMSE15.0972. Nhân Chính2559/648/649: RF MAE6.7809 RMSE9.4208; persistence MAE5.7281 RMSE7.2831. Không tuyên bố thắng baseline; đây là retrospective snapshot backtest. Report ml-evaluation.json.
+- README/architecture/dictionary/labs index/module README đã cập nhật theo implementation; labs06/07/demo/presentation còn đang viết. CLI train/predict/benchmark đã code, predict chưa chạy. Dashboard ML panels code đã bổ sung nhưng chưa provision/visual QA.
+- Benchmark52090 fail assertion sum(double) trước/sau rewrite vì thứ tự cộng floating point; không xóa namespace cũ. Sửa SUM decimal xác định và thêm exceptAll hai chiều kiểm nguyên hàng. Rerun9598 đang sống, log artifacts/local/benchmark-second.log.
+- Processor/Collector hiện paused để giữ RAM cho Spark jobs; core healthy. Cần resume Collector/processor sau ML/benchmark, predict khi hours đủ mới; test6 ML mới thêm forecast retry/actual enrichment còn chưa chạy.
+- Bước tiếp: poll benchmark9598, test ML bổ sung, operational forecast+ML dashboard, hoàn thiện docs/snippets/links/secret; commit/push và cập nhật PR#1. Goal active.
+
+## STEP-015 — 2026-10-24T17:10:35+07:00 — ML operational, benchmark và lỗi concurrency catalog
+
+- Nền c5ab9fa, working tree chưa commit. Benchmark9598 terminal0: bản sao202537 hàng thật,28→7files,10515307→9327132bytes; tháng7 chạm4/28 trước và1/7 sau. exceptAll hai chiều0, Spark/Trino time travel cùng202537. Client median2.178→2.204s, không claim tăng tốc. Report iceberg-benchmark.json, namespace experiment_20261024_095728 giữ snapshots.
+- Test ML39114 fail ở forecast_actual commit khi dashboard đọc cùng lúc: catalog log xác nhận SQLITE_BUSY. Bật JDBC URI journal_mode=WAL & busy_timeout30000 trên DB cũ, restart catalog giữ bảng/count. Test72743 terminal0:6pass gồm retry giữ forecast đầu và actual correction. Không xóa dữ liệu failed test, không retry commit Unknown mù.
+- Trino476 view API gọi REST1.6.0 trả lỗi load view. Đối chiếu source476 có property view-endpoints-enabled, tắt đúng property và restart riêng Trino65245 terminal0. Bảng Iceberg không đổi; Superset virtual datasets tiếp tục SQL. New virtual dataset cần refresh metadata cả lần tạo, đã sửa provision.
+- Ingest/predict84146 terminal0: dữ liệu giờ10:00UTC, issue10:06:41UTC, target11:00UTC,2trạm operational. Report operational-forecast.json; forecast_actual actual chưa có giữ null. Model thật load lại từ volume.
+- Dashboard8charts/native17YAML đã provision, requests994..1001 chart APIs đều200, screenshot dashboard-final.png đã xem đủ curves/metrics/operational2rows. Đang bổ sung format2dec và Gold-left-grid cho null gaps backtest, cần chụp lại cuối. Browser riêng airquality, auth ignored.
+- Full unit+Spark integration86924 đang chạy; logs artifacts/local/tests-full.log. Collector sống, processor paused cho Spark jobs; phải resume cuối. Labs06/07/demo/walkthrough/script trích6snippets đã viết, links/status/secret/diff còn kiểm trước commit/push.
+
+## STEP-016 — 2026-10-24T17:25:37+07:00 — Nghiệm thu cuối và Git base đã thay đổi
+
+- Code checkpoint b7a544a và fix ba600f8 đã commit local, chưa push. Unit25pass, Spark13pass+4live skip ở tests-final76872 terminal0;4API live đã pass riêng trước đó. Test mới thêm nullable Bronze schema migration, original_ingested_at replay, stale suppress/model-after-issue guard, null metric guard.
+- Replay47400 terminal0:168 public hourly events → Kafka topic riêng → Bronze/Silver168, Gold grid672, original_ingested_at168 được bảo toàn; report replay-isolation.json. Forecast retry61695 terminal0:2operational predictions giữ issued_at/value đầu tiên, report forecast-idempotency.json.
+- Native import HTTP200 trước đó vẫn làm16layoutnodes dù chỉ8charts. Xem source Superset4.1.2 phát hiện meta.uuid bị thiếu: bổ sung chart_uuids đọc native export chính thức, layout giữ UUID. Provision/import82773 terminal0 và assert8nodes/8uniqueIDs/8UUID; chartrequests1393..1400 đều200. Screenshot cuối dashboard-final.png, không giữ bản lặp làm proof cuối.
+- Processor69207 resume terminal0, Collector đang sống. Live status xác nhận7nativehealthchecks+catalogHTTP200,8daemons running, init exit0, Silver duplicate0; live-final-status.json.
+- verify_repository: syntax/TOML/links/diff và credential thực tế scan sạch; source fingerprint/JUnit/UI trong final-verification.json. Script trích6snippets đã chạy lại đúng source; labs01–07/demo/architecture/dictionary/walkthrough hoàn thiện.
+- GitHub PR#1 đã được merge bên ngoài tác vụ lúc09:08:15UTC vào main78fffbb; fetch xác nhận tree main bằng c5ab9fa (không có thay đổi cần mất). Không reopen/merge/forcepush. Sau commit docs sẽ tạo nhánh feat/lakehouse-ml-completion từ main và cherry-pick các commit local mới để mở draft PR tiếp theo; giữ nhánh cũ.
+- Bước tiếp: commit docs/evidence, chuyển base sạch như trên, push/new draft PR/attach, đồng bộ context Git cuối. Goal chưa đánh complete trước khi bàn giao Git xong.

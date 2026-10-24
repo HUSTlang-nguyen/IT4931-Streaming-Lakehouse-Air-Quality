@@ -38,7 +38,7 @@ Không coi những test này là bằng chứng broker thật. `--basetemp` ph�
 
 Sau khi stack/Kafka đã được kiểm chứng, dùng `--sink kafka` (default của backfill/live). `live --once` chạy một chu kỳ rồi dừng; live không `--once` tiếp tục tới Ctrl+C. Chu kỳ đầu đối soát 7 ngày, sau đó overlap 24 giờ và định kỳ 24 giờ đối soát lại. Hiện lịch chờ 300 giây tính sau chu kỳ trước, nên chu kỳ thực phụ thuộc cả thời gian xử lý.
 
-`replay --topic air-quality.replay.demo` đọc raw archive, gắn mode replay và giữ original_ingested_at; không được gửi vào topic live. Kafka được cấu hình qua `KAFKA_BOOTSTRAP_SERVERS`; chưa xác nhận broker local ở checkpoint Collector.
+`replay --topic air-quality.replay.demo` đọc raw archive, gắn mode replay và giữ original_ingested_at; không được gửi vào topic live. Kafka được cấu hình qua `KAFKA_BOOTSTRAP_SERVERS`; broker local đã ACK 202.041 bản ghi nguồn khi drain lịch sử (xem Lab03).
 
 ## Chẩn đoán và bài tập
 
@@ -46,3 +46,5 @@ Sau khi stack/Kafka đã được kiểm chứng, dùng `--sink kafka` (default 
 - DB/lock bận: chỉ chạy một Collector chính; các test live chia sẻ limiter SQLite nhưng không thay progress.
 - Lịch sử có gap/correction: xem raw và báo cáo, đừng nhân count theo kỳ vọng để thay số thực tế.
 - Bài tập: đọc test ACK failure, vẽ hai vị trí crash (trước ACK và sau ACK trước SQLite), giải thích tại sao cần cả checkpoint và downstream MERGE.
+
+Collector container dùng SQLite volume Linux riêng để tránh Windows/Linux cùng mở DB. Khi backfill API nặng trên host, dừng service collector trước và mở lại sau; hai limiter không chia sẻ budget giữa hai filesystem. Drain/replay offline không gọi API.

@@ -1,0 +1,22 @@
+{
+  "issued_at": "2026-10-24T10:11:52.891282+00:00",
+  "source_snapshot": 2736337358702602876,
+  "model_version": "rf-f0077526710fd81e",
+  "stations": [
+    {
+      "sensor_id": 13502154,
+      "status": "issued_or_already_exists",
+      "input_time": "2026-10-24T10:00:00+00:00"
+    },
+    {
+      "sensor_id": 13502151,
+      "status": "issued_or_already_exists",
+      "input_time": "2026-10-24T10:00:00+00:00"
+    }
+  ],
+  "provenance": {
+    "generated_at": "2026-10-24T10:12:21.236701Z",
+    "code_revision": "c5ab9fae82621fcf54f533b79e90fbb77c08fe66",
+    "working_tree_dirty": true
+  }
+}

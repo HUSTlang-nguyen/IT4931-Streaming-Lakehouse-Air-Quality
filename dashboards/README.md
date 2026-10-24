@@ -1,5 +1,5 @@
-# Dashboard Superset
+# Superset dashboard
 
-**Trạng thái ban đầu:** scaffold.
+Python provision [dashboard.py](../src/air_quality/dashboard.py), source spec air-quality-spec.json, native YAML ở export/. Chạy CLI dashboard sau khi bảng tồn tại. Database URI nội bộ Trino không có password; admin credentials chỉ đọc .env local.
 
-Đặt export cấu hình dashboard/dataset/chart tái tạo được, kèm hướng dẫn import và gắn kết nối Trino. Chưa có dashboard. Không xuất credential. Biểu đồ phải giữ gap, freshness theo sensor và nhãn forecast/backtest rõ ràng.
+Native ZIP ở output/playwright/dashboard-native.zip ignored. import_native helper đọc ZIP và giữ UUID; export YAML cấu hình được theo dõi Git, không có secret. Xem [Lab05](../labs/05-dashboard.md) và bằng chứng reports/stack-dashboard-checkpoint.json.

@@ -1,29 +1,16 @@
-# Đọc code theo đường đi của một measurement
+# Một measurement đi qua code như thế nào?
 
-**Đã chạy:** Settings → OpenAQClient.get → make_event → Collector.collect_window → JsonlPublisher.publish → StateStore.acknowledge. Kafka publisher đã có code nhưng chưa kiểm chứng broker; processing/forecasting chưa triển khai.
+Ví dụ: PM2.5 sensor13502154 ĐHBK, endpoint `/hours`, khoảng `(t-1h,t]`, value đơn vị µg/m³. Không trộn với sensor PM10 hoặc raw measurements cùng timestamp.
 
-## Trình tự đọc
+1. [Settings.from_env](../src/air_quality/config/settings.py) kiểm config/key, registry sensor và default polling. Secrets repr-hidden, key chỉ gửi API bằng header.
+2. [OpenAQClient.get](../src/air_quality/collector/openaq.py) xin request budget SQLite trước từng HTTP attempt, timeout/retry429/Retry-After hữu hạn. [Collector.location_metadata](../src/air_quality/collector/service.py) kiểm location/sensor/parameter và cache metadata5 phút.
+3. `Collector.collect_window` phân trang sensor/window; [make_event](../src/air_quality/contracts/events.py) tạo envelope v1/event_id giữ raw_payload/location_metadata JSON và provenance. Archive ghi fsync+atomic replace trước gửi broker; ACK đủ trang rồi [StateStore.acknowledge](../src/air_quality/collector/state.py) mới commit. Crash sau ACK trước checkpoint có thể retry, downstream phải idempotent.
+4. [KafkaPublisher.publish](../src/air_quality/collector/publisher.py) chờ delivery; [ingest](../src/air_quality/processing/jobs.py) Structured Streaming đọc topic/offset/checkpoint. [parse_kafka](../src/air_quality/processing/transforms.py) tách envelope sai/mode replay vào live thành deadletter, giữ message gốc.
+5. [process_events/merge_bronze](../src/air_quality/processing/tables.py) giữ event_id duy nhất; [normalize](../src/air_quality/processing/transforms.py) parse UTC/period/value/unit/metadata, gắn flags. Không có business key thì rejected; invalid có key vẫn Silver với flags.
+6. `merge_silver`: key(sensor_id,series_kind,period_start,period_end), chỉ newest ingested_at/event_id được correction. Cùng Kafka event retry không thêm khóa. Observation cũ không ghi đè correction mới hơn.
+7. `refresh_gold` dùng [hourly_gold/daily_gold](../src/air_quality/processing/transforms.py): chỉ mean /hours nguồn đã kiểm chứng, grid giờ với null gaps; daily theo ngàyVN và count/24. Invalid correction bỏ giá trị Gold cũ; late record lấp đúng giờ thiếu. Atomic overwrite từng bảng, không transaction xuyên bảng; retry batch phục hồi nếu crash giữa Silver/Gold.
+8. Trino cùng REST catalog đọc Iceberg S3 mà Spark đã commit. [dashboard_spec/provision](../src/air_quality/dashboard.py) tạo dataset/curves/tables và native export/import. SQL format label giờVN để tránh browser cộng timezone lần hai.
+9. [feature_rows/labelled_rows](../src/air_quality/forecasting/features.py) exact join current/lag1/2/3/24, label t+1 riêng vector. [train](../src/air_quality/forecasting/model.py) pin snapshot, split/purge70/15/15, fit train/chọn validation/test heldout, metrics và persistence cùng mẫu. Backtest không giả availability lịch sử.
+10. `predict` kiểm issue/model/input availability/target/stale rồi lưu forecast đầu tiên theo model/sensor/target/mode; `enrich_actuals` join Gold hiện tại, missing actual giữ null. Model config/version/snapshot và code provenance nối dự báo về nguồn.
 
-1. [config](../src/air_quality/config/README.md): cấu hình lấy từ đâu, kiểm tra gì, che secret như thế nào.
-2. [contracts](../src/air_quality/contracts/README.md): ID, schema, timestamp/đơn vị và định danh bản ghi.
-3. [collector](../src/air_quality/collector/README.md): metadata, khoảng truy vấn, phân trang/retry, event Kafka, checkpoint.
-4. [processing](../src/air_quality/processing/README.md): raw Bronze → chuẩn hóa/dedup Silver → Gold có điều kiện.
-5. [sql](../sql/README.md) và [dashboards](../dashboards/README.md): đọc cùng bảng qua Trino, hiển thị gap/freshness.
-6. [forecasting](../src/air_quality/forecasting/README.md): chuỗi giờ hợp lệ → causal features → split → model/baseline → forecast table.
-7. [observability](../src/air_quality/observability/README.md) và [tests](../tests/README.md): thấy lỗi ở đâu, bằng chứng nào xác nhận đúng.
-
-## Mẫu cập nhật cho mỗi tính năng đã có
-
-- File và tên hàm thật; link tới source thay cho bản copy logic khác.
-- Một input nhỏ đã làm sạch, output mong đợi và invariant được kiểm tra.
-- Các bước biến đổi, I/O và lỗi/side effect, lý do quyết định khó.
-- Lệnh chạy thực tế, prerequisite và evidence tương ứng; test gọi đúng production function.
-- Mối liên hệ với bước trước/sau, tác động khi duplicate/late/corrected data.
-
-Không ghi tên hàm/lệnh giả ở scaffold. Agent hoàn thiện từng mục cùng implementation và đồng bộ sau refactor. [Labs](../labs/README.md) là đường học thực hành; file này là chỉ mục đọc code.
-
-## Lần theo code Collector hiện có
-
-Đọc `run_collection` trong [cli.py](../src/air_quality/cli.py), sau đó [collect_window](../src/air_quality/collector/service.py). `location_metadata` kiểm tra đúng sensor/parameter; `OpenAQClient.get` xin budget trước từng HTTP attempt; `make_event` giữ raw và provenance; `atomic_json` ghi raw bất biến; publisher ACK xong mới `StateStore.acknowledge`.
-
-[Test crash/ACK](../tests/unit/test_collector.py) chạy đúng service với HTTP/broker double, SQLite và file thật. [Live contract](../tests/integration/test_openaq_live.py) kiểm tra API thật khi bật --run-live. Xem Lab 01/02 để chạy; chưa có code Spark để trích.
+[Tests](../tests/README.md), [labs](../labs/README.md), [reports](../artifacts/README.md) cho input/expected/evidence. `processing/experiments.py` copy snapshot sang namespace riêng để kiểm pruning/compaction/time travel, giữ live nguyên vẹn.

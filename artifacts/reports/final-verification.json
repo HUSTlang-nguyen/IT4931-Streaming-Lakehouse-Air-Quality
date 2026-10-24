@@ -1,0 +1,63 @@
+{
+  "repository_checks": {
+    "candidate_files_checked": 134,
+    "secret_match_files": [],
+    "broken_links": [],
+    "python_syntax": "pass",
+    "pyproject_toml": "pass",
+    "diff_check": "pass",
+    "application_source_sha256": "256c3f101f8f17ef133ab4b807fe9d77adb48f017560879182f26277fc6c422e"
+  },
+  "unit_suite": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "25",
+    "time": "0.519",
+    "timestamp": "2026-10-24T17:14:45.331902+07:00",
+    "hostname": "G513QC"
+  },
+  "spark_suite": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "4",
+    "tests": "17",
+    "time": "89.680",
+    "timestamp": "2026-10-24T10:14:48.236323+00:00",
+    "hostname": "18985b4e2cd1"
+  },
+  "spark_passed": 13,
+  "openaq_contract_live_passed_prior_checkpoint": 4,
+  "chart_api_status": {
+    "1": 200,
+    "2": 200,
+    "3": 200,
+    "4": 200,
+    "5": 200,
+    "6": 200,
+    "7": 200,
+    "8": 200
+  },
+  "dashboard_layout_after_native_import": {
+    "nodes": 8,
+    "unique_chart_ids": 8,
+    "uuid_references": 8,
+    "native_yaml_files": 17
+  },
+  "screenshot_local": "output/playwright/dashboard-final.png",
+  "limitations": [
+    "Two stations only; no citywide representation",
+    "Raw reported interval physical meaning unresolved; analysis/ML use validated source /hours means",
+    "Retrospective snapshot backtest is not historical operational availability simulation",
+    "Random Forest does not consistently outperform persistence",
+    "Forecast issued by explicit predict command; no background ML scheduler",
+    "Local single-node stack, no HA; benchmark cache/client overhead prevents general speedup claim"
+  ],
+  "provenance": {
+    "generated_at": "2026-10-24T10:25:37.265920Z",
+    "code_revision": "ba600f8cd159f1f46ac2cdec5b27b16845a6cd98",
+    "working_tree_dirty": true
+  }
+}

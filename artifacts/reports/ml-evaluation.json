@@ -1,0 +1,160 @@
+{
+  "model_version": "rf-f0077526710fd81e",
+  "source_snapshot": 5061425689190597954,
+  "namespace": "live",
+  "config": {
+    "seed": 42,
+    "numTrees": 30,
+    "depth_candidates": [
+      5,
+      8
+    ],
+    "features": [
+      "current_value",
+      "lag_1",
+      "lag_2",
+      "lag_3",
+      "lag_24",
+      "hour_of_day"
+    ],
+    "split": [
+      70,
+      15,
+      15
+    ]
+  },
+  "trained_at": "2026-10-24T09:54:03.155865+00:00",
+  "evaluation_mode": "retrospective_snapshot_backtest",
+  "limitation": "Historical ingestion availability unknown; not a historical operational simulation",
+  "provenance": {
+    "generated_at": "2026-10-24T09:53:32.958652Z",
+    "code_revision": "c5ab9fae82621fcf54f533b79e90fbb77c08fe66",
+    "working_tree_dirty": true
+  },
+  "stations": [
+    {
+      "sensor_id": 13502154,
+      "station_name": "ĐHBK",
+      "path": "models/rf-f0077526710fd81e/13502154",
+      "counts": {
+        "train": 2317,
+        "validation": 513,
+        "test": 555
+      },
+      "ranges": {
+        "train": {
+          "first_input": "2026-04-28T01:00:00+00:00",
+          "last_input": "2026-08-29T00:00:00+00:00",
+          "last_target": "2026-08-29T01:00:00+00:00"
+        },
+        "validation": {
+          "first_input": "2026-09-01T14:00:00+00:00",
+          "last_input": "2026-09-27T06:00:00+00:00",
+          "last_target": "2026-09-27T07:00:00+00:00"
+        },
+        "test": {
+          "first_input": "2026-09-27T08:00:00+00:00",
+          "last_input": "2026-10-24T08:00:00+00:00",
+          "last_target": "2026-10-24T09:00:00+00:00"
+        }
+      },
+      "train_end_exclusive": "2026-08-31T07:00:00+00:00",
+      "validation_end_exclusive": "2026-09-27T08:00:00+00:00",
+      "selected_depth": 8,
+      "validation_candidates": [
+        {
+          "depth": 5,
+          "n": 513,
+          "mae": 11.64705337744881,
+          "rmse": 15.22080230943403
+        },
+        {
+          "depth": 8,
+          "n": 513,
+          "mae": 10.001952628311365,
+          "rmse": 13.466286496767017
+        }
+      ],
+      "test_random_forest": {
+        "n": 555,
+        "mae": 11.394211411653023,
+        "rmse": 16.663790606686945
+      },
+      "test_persistence": {
+        "n": 555,
+        "mae": 11.746810810810832,
+        "rmse": 15.097221234684516
+      },
+      "feature_importances": {
+        "current_value": 0.5940285109351752,
+        "lag_1": 0.16090732876975034,
+        "lag_2": 0.04855824475307151,
+        "lag_3": 0.06125053825999013,
+        "lag_24": 0.07320343405122286,
+        "hour_of_day": 0.062051943230789976
+      }
+    },
+    {
+      "sensor_id": 13502151,
+      "station_name": "Công viên Nhân Chính",
+      "path": "models/rf-f0077526710fd81e/13502151",
+      "counts": {
+        "train": 2559,
+        "validation": 648,
+        "test": 649
+      },
+      "ranges": {
+        "train": {
+          "first_input": "2026-04-28T01:00:00+00:00",
+          "last_input": "2026-08-31T05:00:00+00:00",
+          "last_target": "2026-08-31T06:00:00+00:00"
+        },
+        "validation": {
+          "first_input": "2026-08-31T07:00:00+00:00",
+          "last_input": "2026-09-27T06:00:00+00:00",
+          "last_target": "2026-09-27T07:00:00+00:00"
+        },
+        "test": {
+          "first_input": "2026-09-27T08:00:00+00:00",
+          "last_input": "2026-10-24T08:00:00+00:00",
+          "last_target": "2026-10-24T09:00:00+00:00"
+        }
+      },
+      "train_end_exclusive": "2026-08-31T07:00:00+00:00",
+      "validation_end_exclusive": "2026-09-27T08:00:00+00:00",
+      "selected_depth": 8,
+      "validation_candidates": [
+        {
+          "depth": 5,
+          "n": 648,
+          "mae": 7.52846278133068,
+          "rmse": 9.60944719213469
+        },
+        {
+          "depth": 8,
+          "n": 648,
+          "mae": 6.327882750779375,
+          "rmse": 8.45048553221612
+        }
+      ],
+      "test_random_forest": {
+        "n": 649,
+        "mae": 6.780906202607607,
+        "rmse": 9.42077839679215
+      },
+      "test_persistence": {
+        "n": 649,
+        "mae": 5.72810477657935,
+        "rmse": 7.283118141381825
+      },
+      "feature_importances": {
+        "current_value": 0.533882748118835,
+        "lag_1": 0.17713079625910536,
+        "lag_2": 0.06311140423430527,
+        "lag_3": 0.09134032463587154,
+        "lag_24": 0.0597291145332657,
+        "hour_of_day": 0.07480561221861712
+      }
+    }
+  ]
+}

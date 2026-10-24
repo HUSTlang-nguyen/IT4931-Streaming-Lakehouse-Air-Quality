@@ -9,7 +9,7 @@
 
 ## Phạm vi
 
-Goal triển khai đã được người dùng khởi động ngày 24/10/2026. Đọc `GOAL_PROMPT.md` làm hợp đồng phạm vi. Collector đã có; stack/ML còn triển khai. Không suy ra hoàn thành từ scaffold hoặc unit tests. Dependency host đã cài, runtime Spark chưa kiểm chứng.
+Goal triển khai đã được người dùng khởi động ngày 24/10/2026. Đọc `GOAL_PROMPT.md` làm hợp đồng phạm vi. Collector/stack/ML đã có code và bằng chứng; xem context để biết nghiệm thu mới nhất. Không suy ra hoàn thành từ scaffold hoặc unit tests. Runtime Spark đã kiểm chứng trong container, host chỉ điều khiển.
 
 ## Python và cách giải thích
 

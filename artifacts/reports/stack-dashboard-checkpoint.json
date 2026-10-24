@@ -1,0 +1,27 @@
+{
+  "verified_at": "2026-10-24T16:45:35+07:00",
+  "spark_integration_tests": {
+    "tests": "6",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "51.407"
+  },
+  "scenario_names": [
+    "duplicate/correction-old-new",
+    "late-data-fills-gap-daily",
+    "invalid-correction-removes-gold",
+    "missing-period-quarantine",
+    "UTC-unit-flags",
+    "replay-on-live-dead-letter"
+  ],
+  "dashboard": {
+    "id": 1,
+    "charts": 5,
+    "chart_api_status": 200,
+    "native_import": "OK",
+    "screenshot_local": "output/playwright/dashboard-live.png",
+    "timezone": "Asia/Ho_Chi_Minh"
+  },
+  "scope": "Actual local services; ML and compaction/pruning experiments not yet verified"
+}
