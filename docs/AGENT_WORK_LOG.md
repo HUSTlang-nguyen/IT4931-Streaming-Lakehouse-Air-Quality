@@ -189,3 +189,24 @@ Hash commit mới ghi ở STEP sau, tránh tự tham chiếu hash chứa chính 
 - PR#2 OPEN+draft đã attach; Git delivery dùng nhánh mới từ main78fffbb, không sửa PR#1 merged hay lịch sử đã push. Checklist và context được đồng bộ, final docs/evidence chuẩn bị commit/push cuối; sau xác nhận remote đồng bộ và tree sạch mới mark Goal complete.
 - Giới hạn bàn giao: RF không thắng persistence nhất quán; predict theo lần gọi; backtest không giả historical availability; raw physical interval chưa rõ, dùng source/hours;2station/local small scale, không claim compaction làm query nhanh hơn.
 - Tiếp tục sau bàn giao: dùng README/docs/demo/labs, không tự tạo Goal lại cho cùng công việc. Khi người dùng yêu cầu mở rộng, kiểm Git/PR/toolGoal hiện tại trước; không tự merge PR hoặc xóa volume.
+
+## STEP-019 — 2026-10-24T18:15:29+07:00 — Onboarding contributor sau PR#2 merge
+
+- Yêu cầu mới: hoàn thiện clean setup guide, CONTRIBUTING, backlog và đồng bộ trạng thái. Không tạo Goal mới/triển khai backlog. Git root sạch, PR#2 đã MERGED lúc2026-10-24T10:57:08Z; origin/mainf39b307 tree bằng4889243, nhánh docs/contributor-onboarding từ main. Không merge/forcepush/deletebranch.
+- Thêm docs/SETUP.md với bounds180ngày UTC tròn giờ lưu local, explicit JSONL capture→profile→Kafka drain→process availableNow→bounded Silver reconciliation trước train, runtime build tường minh, offline/core/live phases, tài nguyên local và troubleshooting. CONTRIBUTING.md có Git/PR/test/docs workflow; docs/BACKLOG.md có ONB/DEV/OPS/ML/DATA/SCALE cùng acceptance, không mặc nhiên thực thi.
+- Đồng bộ README, AGENTS, Goal prompt, IMPLEMENTATION_PLAN, docs index/demo/context và labs01/03/index. Bỏ trạng thái PR#2 draft/pending-push hiện tại; giữ nhật ký/report lịch sử nguyên vẹn. Source nghiệp vụ không đổi.
+- Kiểm chứng đang chuẩn bị: syntax/Markdown/lệnh PowerShell, clone sạch và venv mới không .env/data/models, unit/CLI, Compose config --quiet với credentials tạm. Không start stack clone thứ hai trên cùng Docker engine, không xóa volumes/images đang phục vụ user. Fresh Docker bootstrap toàn bộ còn mở ONB-01.
+- Bước tiếp: commit candidate docs, chạy verification clone riêng, ghi kết quả thật vào artifacts/reports/contributor-onboarding.md, push nhánh/draft PR tài liệu và attach.
+
+## STEP-020 — 2026-10-25 — Kết quả kiểm onboarding và sửa lỗi test lần đầu
+
+- Nhánh docs/contributor-onboarding, docsc02c3f1 và fixfbff886 đã commit local. Probe ngày24/10 clone Git độc lập/venv mới ban đầu15pass+10setup errors do artifacts/local parent thiếu; JUnit cuối run tạo parent nên không dùng rerun clone cũ làm bằng chứng. Sửa operations.run_tests mkdir trước pytest, thêm regression test.
+- Clone mới khác ở temp, candidatefbff886, trước setup không .env/.venv/data/models/checkpoints/artifacts/local; environment loại API/service credentials. pip editable install/check +CLI help +26unit pass (0failure/error/skip), repository verifier pass, git clone vẫn sạch. Compose2.39.2 config --quiet với credential tạm pass, không start services. Probe38,41s;19PowerShell blocks parse/date format pass. Logs/JUnit/result local, không in/commit secret.
+- Báo cáo artifacts/reports/contributor-onboarding.md ghi môi trường Windows11/Python3.13.12, candidate/source fingerprint, lỗi/fix và giới hạn. Không tuyên bố full Docker từ trắng, không xóa volumes/cache hoặc tác động stack đang chạy. ONB-01 còn mở; không triển khai backlog/tạo Goal mới.
+- Handoff README/SETUP/CONTRIBUTING/BACKLOG/context đã đồng bộ. Pipeline/ML không thay đổi; chỉ test-runner artifact initialization,26unit kiểm phù hợp, không chạy lại Spark cho docs. Bước tiếp commit report/context, push và tạo draft PR/attach; không tự merge.
+
+## STEP-021 — 2026-10-25 — Push và bàn giao PR onboarding
+
+- Commitsc02c3f1 (tài liệu), fbff886 (first-run test fix),1012e7e (clean-clone evidence) đã push lên origin/docs/contributor-onboarding. Đã tạo/attach draft PR#3: https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality/pull/3, base main, không tự merge.
+- SETUP/CONTRIBUTING/BACKLOG/README/context đã đồng bộ trạng thái PR#1/#2 merged và PR#3 chờ review.26unit pass trên clone/venv mới, pip/CLI/repo/Compose config pass;19PowerShell blocks parse pass. Giới hạn full Docker cold-bootstrap còn mở ONB-01, không tạo Goal/triển khai backlog.
+- Metadata checkpoint này chuẩn bị commit/push cuối. Khi tiếp tục, kiểm trạng thái PR#3 thực tế trước khi dùng mô tả OPEN ở context; không giả định service/model/data của máy cũ có trên clone mới.

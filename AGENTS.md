@@ -9,7 +9,7 @@
 
 ## Phạm vi
 
-Goal triển khai đã được người dùng khởi động ngày 24/10/2026. Đọc `GOAL_PROMPT.md` làm hợp đồng phạm vi. Collector/stack/ML đã có code và bằng chứng; xem context để biết nghiệm thu mới nhất. Không suy ra hoàn thành từ scaffold hoặc unit tests. Runtime Spark đã kiểm chứng trong container, host chỉ điều khiển.
+Goal triển khai ban đầu đã complete ngày 24/10/2026, PR#1/#2 đã merge. Đọc docs/SETUP.md, CONTRIBUTING.md và docs/BACKLOG.md khi onboarding; backlog không phải lệnh tự triển khai hoặc tạo Goal. Đọc `GOAL_PROMPT.md` làm hợp đồng phạm vi. Collector/stack/ML đã có code và bằng chứng; xem context để biết nghiệm thu mới nhất. Không suy ra hoàn thành từ scaffold hoặc unit tests. Runtime Spark đã kiểm chứng trong container, host chỉ điều khiển.
 
 ## Python và cách giải thích
 
@@ -32,7 +32,7 @@ Goal triển khai đã được người dùng khởi động ngày 24/10/2026. 
 ## Git workflow
 
 - Dùng Git root/remote hiện tại; không tạo repository lồng nhau.
-- Scaffold ở `chore/project-scaffold`; lượt đầu triển khai trên `feat/air-quality-lakehouse`. PR#1 đã merge; phần stack/ML tiếp tục trên `feat/lakehouse-ml-completion` từ main78fffbb, draft PR#2. Luôn kiểm branch/PR thực tế trước khi tiếp tục.
+- PR#1/#2 đã merge; base đóng góp hiện tại là main. Tạo nhánh mới theo CONTRIBUTING.md, không tiếp tục nhánh PR đã đóng chỉ vì context lịch sử nhắc tên. Lượt onboarding dùng docs/contributor-onboarding từ mainf39b307; luôn kiểm Git/PR thực tế trước khi tiếp tục.
 - Commit nhỏ theo `feat:`, `fix:`, `test:`, `docs:`, `chore:`; xem diff, check secret/test phù hợp rồi stage đúng file liên quan.
 - Khi Goal được giao, push checkpoint và tạo draft PR theo prompt. Lượt scaffold chỉ commit/push, chưa tạo PR.
 - Không tự merge, force-push, xóa branch, reset phá thay đổi hoặc rewrite lịch sử đã push. Không mua cloud, xóa volume hay sửa dịch vụ ngoài dự án.

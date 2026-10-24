@@ -87,6 +87,9 @@ def run_tests(env_file: Path, integration: bool = False, live: bool = False) -> 
     import sys
     from uuid import uuid4
 
+    # Clone mới chỉ có artifacts/reports. pytest tạo basetemp cuối nhưng không
+    # tạo thư mục cha; mkdir trước để lần test đầu không phụ thuộc cache cũ.
+    (ROOT / "artifacts/local").mkdir(parents=True, exist_ok=True)
     run = uuid4().hex[:12]
     arguments = [sys.executable, "-m", "pytest", "tests/unit", "-q", "--tb=short",
                  f"--basetemp=artifacts/local/pytest-unit-{run}", "--junitxml=artifacts/local/tests-unit.xml"]
