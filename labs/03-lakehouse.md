@@ -54,3 +54,9 @@ Sáu test Spark/Iceberg thật kiểm duplicate/correction cũ-mới, late data/
 - Job bị lock: xem processor thực sự còn sống; không xóa lock của writer đang chạy.
 - Giải thích crash sau Silver trước Gold: Kafka checkpoint chưa tiến, retry MERGE không nhân đôi và Gold được tái tính.
 - Bài tập: đọc report snapshot, truy vấn một snapshot Silver cũ qua Trino rồi so hiện tại. Không expire snapshot làm mất bằng chứng.
+
+## Edge cases khóa và timestamp null
+
+Mọi thành phần Silver key phải non-null; SQL `=` không match null nên chỉ kiểm period/sensor là chưa đủ khi series_kind thiếu. Bản thiếu key ở Bronze/rejected, không vào Silver. Source rejected cũng dedup event_id trước MERGE để hai bản lỗi cùng batch không bị insert hai lần vào bảng rỗng.
+
+Correction có ingested_at hợp lệ ưu tiên hơn bản cũ ingested_at null; dùng so sánh null-safe cho tie-break. Nếu chỉ dùng `new > old`, SQL so với null trả unknown và không bao giờ phục hồi bản lỗi. Test null-business-key kiểm quarantine retry và correction phục hồi value/flags.

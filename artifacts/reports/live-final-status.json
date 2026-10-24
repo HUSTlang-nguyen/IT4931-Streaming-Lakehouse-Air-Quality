@@ -58,8 +58,8 @@
   "catalog_http_readiness": 200,
   "silver_duplicate_keys": 0,
   "provenance": {
-    "generated_at": "2026-10-24T10:23:32.581905Z",
-    "code_revision": "ba600f8cd159f1f46ac2cdec5b27b16845a6cd98",
+    "generated_at": "2026-10-24T10:35:39.005781Z",
+    "code_revision": "e18e0b09e71a892ea32997bfad7e727f952e1472",
     "working_tree_dirty": true
   }
 }

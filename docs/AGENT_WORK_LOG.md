@@ -174,3 +174,18 @@ Hash commit mới ghi ở STEP sau, tránh tự tham chiếu hash chứa chính 
 - verify_repository: syntax/TOML/links/diff và credential thực tế scan sạch; source fingerprint/JUnit/UI trong final-verification.json. Script trích6snippets đã chạy lại đúng source; labs01–07/demo/architecture/dictionary/walkthrough hoàn thiện.
 - GitHub PR#1 đã được merge bên ngoài tác vụ lúc09:08:15UTC vào main78fffbb; fetch xác nhận tree main bằng c5ab9fa (không có thay đổi cần mất). Không reopen/merge/forcepush. Sau commit docs sẽ tạo nhánh feat/lakehouse-ml-completion từ main và cherry-pick các commit local mới để mở draft PR tiếp theo; giữ nhánh cũ.
 - Bước tiếp: commit docs/evidence, chuyển base sạch như trên, push/new draft PR/attach, đồng bộ context Git cuối. Goal chưa đánh complete trước khi bàn giao Git xong.
+
+## STEP-017 — 2026-10-24T17:29:28+07:00 — Draft PR#2 và guard MERGE null trước bàn giao
+
+- PR#1 merged main78fffbb có tree giống c5ab9fa. Đã giữ nhánh cũ, tạo feat/lakehouse-ml-completion từ main và cherry-pick b7a544a→10347f8, ba600f8→89594df,99d2ceb→d9a2bcf. Source fingerprint không đổi256c3f101f8f17ef133ab4b807fe9d77adb48f017560879182f26277fc6c422e. Không rewrite/forcepush/deletebranch.
+- Đã push nhánh mới và tạo/attach draft PR#2: https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality/pull/2, base main/head đúng, OPEN+draft. PR#1 giữ nguyên đã merge.
+- Rà code cuối phát hiện2edge cases MERGE: null series_kind không được coi key hợp lệ; ingested_at null cũ không match điều kiện > nên correction hợp lệ không phục hồi. Bổ sung kiểm mọi thành phần SILVER_KEYS và null-safe ordering, test quarantine/idempotency/recovery. Không liên quan nguồn thật hiện đã tải (đều valid), nhưng cần invariant khi có dữ liệu lỗi.
+- Processor tạm pause lần nữa cho test20601, log artifacts/local/tests-final-null-guards.log; Collector/core vẫn chạy. Sau test phải resume processor, cập nhật reports/source fingerprint/snippets, commit/push fix+metadata, chốt Goal nếu đủ bằng chứng. Context/README/AGENTS/Goal prompt cập nhật PR#2.
+
+## STEP-018 — 2026-10-24T17:35:01+07:00 — Kiểm chứng toàn bộ và bàn giao draft PR#2
+
+- Code checkpoint e18e0b0 (fix null keys/timestamp correction) trên feat/lakehouse-ml-completion. New test20601 lần đầu bắt rejected duplicate do MERGE source chưa dedup; đã sửa latest_per_key(event_id) trước quarantine. Rerun26515 terminal0:25unit+14Spark pass,4API live skip;4API live đã pass riêng trước đó. Giữ failure log để trace, không đổi assertion.
+- Processor12624 resume terminal0, continuous checkpoint tiếp tục; Collector/core sống. Toàn bộ criteria P1–P6 có proof: source/history reconciliation, duplicate/correction/late/gaps/restart/null guards, ML leakage/baseline/operational+retry/actual,8charts native import UUID, pruning/compaction/time travel. Source code fingerprint cập nhật trong final-verification.json;6snippets đã regenerate.
+- PR#2 OPEN+draft đã attach; Git delivery dùng nhánh mới từ main78fffbb, không sửa PR#1 merged hay lịch sử đã push. Checklist và context được đồng bộ, final docs/evidence chuẩn bị commit/push cuối; sau xác nhận remote đồng bộ và tree sạch mới mark Goal complete.
+- Giới hạn bàn giao: RF không thắng persistence nhất quán; predict theo lần gọi; backtest không giả historical availability; raw physical interval chưa rõ, dùng source/hours;2station/local small scale, không claim compaction làm query nhanh hơn.
+- Tiếp tục sau bàn giao: dùng README/docs/demo/labs, không tự tạo Goal lại cho cùng công việc. Khi người dùng yêu cầu mở rộng, kiểm Git/PR/toolGoal hiện tại trước; không tự merge PR hoặc xóa volume.

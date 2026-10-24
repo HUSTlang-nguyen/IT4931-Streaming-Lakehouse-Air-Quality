@@ -15,7 +15,7 @@ PM `parameter_name` là pm25/pm10, đơn vị µg/m³. Metadata được kiểm 
 |---|---|---|
 | bronze | event_id; schema_version, job_id, ingest_mode, ingested_at, request_from/to, raw_payload, location_metadata, Kafka topic/partition/offset, original_ingested_at (replay) | Envelope v1, raw JSON strings giữ nguyên; partition ngày ingested_at |
 | silver | sensor_id,series_kind,period_start,period_end; value,unit,quality_flags,ingested_at,provider,latitude,longitude | Trạng thái mới nhất của phép đo; partition tháng period_end |
-| rejected | event_id + fields normalized | Thiếu period/sensor không tạo key; vẫn giữ Bronze |
+| rejected | event_id + fields normalized | Thiếu bất kỳ thành phần business key; vẫn giữ Bronze |
 | dead_letter | Kafka topic,partition,offset,message,reason | Sai envelope/schema/mode; replay vào live bị cách ly |
 | hourly | sensor_id,period_end; value,has_data,quality_flags,ingested_at,observed_count,period_start,unit | Grid giờ với mean nguồn /hours, null khi thiếu/invalid; partition tháng |
 | daily | sensor_id,local_date; mean_value,valid_hours,expected_hours=24,window_bins,coverage_percent | Mean giờ hợp lệ theo UTC+7, ngày biên có thể chưa đủ24 giờ |
@@ -30,7 +30,7 @@ Mọi timestamp lưu UTC; local_date là date Việt Nam. `period_end` của /ho
 
 Flags gồm invalid_value (null/NaN/inf/âm), unexpected_unit, invalid_period, source_flagged, metadata_mismatch, unknown_series, invalid_ingested_at. Hai ký tự micro được chuẩn hóa, không tự đổi mg/m³. Bản invalid có key vẫn ở Silver nhưng loại khỏi Gold bằng null. Correction mới hơn có thể thay valid thành invalid, Gold được tính lại để bỏ giá trị cũ.
 
-Newest ingested_at thắng cùng Silver key, event_id tie-break ổn định. Bronze event_id là lần quan sát logic bất biến; thu lại payload sau đó có thể thêm Bronze nhưng không thêm Silver key. Replay topic/namespace riêng, không trộn live/ML metrics.
+Newest ingested_at thắng cùng Silver key, event_id tie-break ổn định; timestamp hợp lệ mới ưu tiên hơn null để correction phục hồi được bản lỗi. Bronze event_id là lần quan sát logic bất biến; thu lại payload sau đó có thể thêm Bronze nhưng không thêm Silver key. Replay topic/namespace riêng, không trộn live/ML metrics.
 
 ## ML features, split và coverage
 

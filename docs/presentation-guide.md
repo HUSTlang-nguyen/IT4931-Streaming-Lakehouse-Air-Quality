@@ -37,7 +37,7 @@ Lời dẫn: Một khoảng thời gian có thể có nhiều trang API. Code gi
 
 ## 2. Chuẩn hóa measurement
 
-Source: [normalize](../src/air_quality/processing/transforms.py#L54), bắt đầu dòng54. SHA256 `8cb8a95348c777905baf8043a8738543f1bb9c8a66a944b6ccc6f713452a558e`.
+Source: [normalize](../src/air_quality/processing/transforms.py#L54), bắt đầu dòng54. SHA256 `2a1d33cec6d8aba1d8ecfe2e80eb4e9564a820ab62b372d51811291270fb9bd1`.
 
 Input: envelope raw JSON; output: period UTC/value/unit/provider và flags trong Silver.
 
@@ -68,7 +68,7 @@ Lời dẫn: Một dòng chỉ đo một chỉ số của một sensor. Code par
 
 ## 3. MERGE chống trùng và correction
 
-Source: [merge_silver](../src/air_quality/processing/tables.py#L57), bắt đầu dòng57. SHA256 `7306a5ce21726dae22f19ae407955eb82de198cccc62c833d7197f7893c1c6ec`.
+Source: [merge_silver](../src/air_quality/processing/tables.py#L57), bắt đầu dòng57. SHA256 `d1eb4fbfe893bbafb6a30c4cc63c7416d05c0d4d30012e5d50361099a2e48ead`.
 
 Input: normalized rows; output: một hàng mỗi sensor/series/khoảng đo.
 
@@ -81,8 +81,9 @@ def merge_silver(frame: DataFrame, namespace: str) -> None:
     source.createOrReplaceTempView("incoming_silver")
     condition = " AND ".join(f"t.{key}=s.{key}" for key in SILVER_KEYS)
     frame.sparkSession.sql(f"""MERGE INTO {table} t USING incoming_silver s ON {condition}
-        WHEN MATCHED AND (s.ingested_at > t.ingested_at OR
-            (s.ingested_at=t.ingested_at AND s.event_id>t.event_id)) THEN UPDATE SET *
+        WHEN MATCHED AND ((s.ingested_at IS NOT NULL AND t.ingested_at IS NULL)
+            OR s.ingested_at > t.ingested_at OR
+            ((s.ingested_at <=> t.ingested_at) AND s.event_id>t.event_id)) THEN UPDATE SET *
         WHEN NOT MATCHED THEN INSERT *""")
 ```
 
@@ -90,7 +91,7 @@ Lời dẫn: Khóa Silver gồm sensor, series_kind và cả đầu/cuối kho�
 
 ## 4. Dữ liệu đến muộn và Gold
 
-Source: [refresh_gold](../src/air_quality/processing/tables.py#L76), bắt đầu dòng76. SHA256 `7306a5ce21726dae22f19ae407955eb82de198cccc62c833d7197f7893c1c6ec`.
+Source: [refresh_gold](../src/air_quality/processing/tables.py#L77), bắt đầu dòng77. SHA256 `d1eb4fbfe893bbafb6a30c4cc63c7416d05c0d4d30012e5d50361099a2e48ead`.
 
 Input: Silver sau MERGE; output: snapshots hourly/daily/freshness mới.
 

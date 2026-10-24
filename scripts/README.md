@@ -7,3 +7,5 @@ CLI vận hành ở src/air_quality/cli.py, không sao chép nghiệp vụ sang 
 ```
 
 Không cần Docker/API cho script trích code, không sửa slide cũ hoặc source nghiệp vụ.
+
+`verify_repository.py` kiểm syntax/TOML, links, diff và secret local không lọt Git; chỉ báo tên file nếu lỗi, không in secret. Source fingerprint chuẩn hóa CRLF để đối chiếu code Windows/container sau đổi branch. Script cần Python3.11+.

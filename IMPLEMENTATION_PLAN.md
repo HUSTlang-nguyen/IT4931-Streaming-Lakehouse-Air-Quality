@@ -1,6 +1,6 @@
 # Kế hoạch triển khai và nghiệm thu
 
-Trạng thái: các lát cắt pipeline, dashboard, ML và thực nghiệm đã chạy; đang kiểm chứng và bàn giao Git cuối. [Prompt độc lập](GOAL_PROMPT.md) quy định Goal khi người dùng bắt đầu; [context](docs/IMPLEMENTATION_CONTEXT.md) ghi trạng thái thực tế.
+Trạng thái: các lát cắt pipeline, dashboard, ML và thực nghiệm đã chạy; các tiêu chí đã có bằng chứng, bàn giao trong draft PR#2. [Prompt độc lập](GOAL_PROMPT.md) quy định Goal khi người dùng bắt đầu; [context](docs/IMPLEMENTATION_CONTEXT.md) ghi trạng thái thực tế.
 
 ## P0 — Scaffold (lượt chuẩn bị)
 
@@ -56,7 +56,7 @@ Trạng thái: các lát cắt pipeline, dashboard, ML và thực nghiệm đã 
 - [x] Partition pruning có query plan/scan evidence; compaction có file count/size và kết quả query; time travel đối chiếu snapshot.
 - [x] Benchmark ghi commit/dataset/config/lệnh/số lần đo/giới hạn; dữ liệu nhân bản tách riêng, không cam kết tăng tốc ở quy mô nhỏ.
 - [x] Labs gọi code thật và đã chạy; walkthrough và 6 đoạn code thuyết trình khớp phiên bản cuối.
-- [ ] README, context/log, draft PR và demo hoàn chỉnh (runtime/docs xong, đang mở draft PR tiếp vì PR#1 đã merge).
+- [x] README, context/log, draft PR#2 và demo hoàn chỉnh; không merge PR.
 
 ## Quy tắc hoàn thành
 

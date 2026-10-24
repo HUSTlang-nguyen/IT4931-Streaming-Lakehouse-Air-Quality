@@ -57,7 +57,7 @@ Sau mỗi mốc có ý nghĩa, append nhật ký rồi cập nhật context: cô
 ## 6. GitHub
 
 - Dùng repository hiện tại, remote `https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality.git`; không khởi tạo Git lồng nhau.
-- Kiểm tra base có scaffold, tạo/reuse `feat/air-quality-lakehouse` từ đó; không mặc định scaffold đã merge `main`.
+- Kiểm tra base có scaffold và branch/PR trong context; reuse nhánh triển khai phù hợp. Nhánh ban đầu `feat/air-quality-lakehouse` đã có PR#1 merged; phần tiếp theo dùng `feat/lakehouse-ml-completion`/PR#2. Nếu PR cũ đã đóng, tạo nhánh mới từ main hiện tại và giữ các thay đổi đã kiểm chứng; không rewrite lịch sử đã push.
 - Commit nhỏ có ý nghĩa (`feat:`, `fix:`, `test:`, `docs:`, `chore:`), xem diff/check secret/test phù hợp, stage đúng file; giữ thay đổi ngoài nhiệm vụ của người dùng.
 - Push checkpoint đã kiểm chứng, tạo draft PR khi có implementation review được và cập nhật mô tả theo trạng thái cuối. Attach PR vào chat nếu công cụ hỗ trợ. Không tự merge, force-push, xóa branch hoặc rewrite lịch sử đã push.
 - Không commit `.env`, credentials, crawl lớn, model binary, volume/cache/raw logs. Theo dõi env example, fixture nhỏ đã làm sạch, lock, dashboard config, báo cáo gọn. Gắn kiểm chứng với commit và ghi rõ nếu working tree dirty.

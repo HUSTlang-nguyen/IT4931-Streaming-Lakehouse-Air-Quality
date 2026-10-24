@@ -1,12 +1,12 @@
 {
   "repository_checks": {
-    "candidate_files_checked": 134,
+    "candidate_files_checked": 135,
     "secret_match_files": [],
     "broken_links": [],
     "python_syntax": "pass",
     "pyproject_toml": "pass",
     "diff_check": "pass",
-    "application_source_sha256": "256c3f101f8f17ef133ab4b807fe9d77adb48f017560879182f26277fc6c422e"
+    "application_source_sha256": "685835732171bae50029777c6f28da1c596bf6d4c6f488e0c06597fe4b7e7644"
   },
   "unit_suite": {
     "name": "pytest",
@@ -14,8 +14,8 @@
     "failures": "0",
     "skipped": "0",
     "tests": "25",
-    "time": "0.519",
-    "timestamp": "2026-10-24T17:14:45.331902+07:00",
+    "time": "0.582",
+    "timestamp": "2026-10-24T17:30:51.130571+07:00",
     "hostname": "G513QC"
   },
   "spark_suite": {
@@ -23,12 +23,12 @@
     "errors": "0",
     "failures": "0",
     "skipped": "4",
-    "tests": "17",
-    "time": "89.680",
-    "timestamp": "2026-10-24T10:14:48.236323+00:00",
-    "hostname": "18985b4e2cd1"
+    "tests": "18",
+    "time": "87.377",
+    "timestamp": "2026-10-24T10:30:53.570363+00:00",
+    "hostname": "05bb0b409086"
   },
-  "spark_passed": 13,
+  "spark_passed": 14,
   "openaq_contract_live_passed_prior_checkpoint": 4,
   "chart_api_status": {
     "1": 200,
@@ -56,8 +56,31 @@
     "Local single-node stack, no HA; benchmark cache/client overhead prevents general speedup claim"
   ],
   "provenance": {
-    "generated_at": "2026-10-24T10:25:37.265920Z",
-    "code_revision": "ba600f8cd159f1f46ac2cdec5b27b16845a6cd98",
+    "generated_at": "2026-10-24T10:35:01.832294Z",
+    "code_revision": "e18e0b09e71a892ea32997bfad7e727f952e1472",
     "working_tree_dirty": true
+  },
+  "spark_case_names": [
+    "test_exact_lags_do_not_cross_gaps",
+    "test_label_is_next_exact_hour_and_not_feature",
+    "test_operational_availability_checks_all_lags",
+    "test_chronological_split_purges_boundary_labels",
+    "test_metrics_use_same_complete_rows",
+    "test_prediction_retry_keeps_first_issue_and_refreshes_actual",
+    "test_duplicate_correction_and_old_observation",
+    "test_late_data_fills_gap_and_refreshes_daily",
+    "test_invalid_correction_removes_previous_gold_value",
+    "test_missing_period_retained_bronze_and_rejected",
+    "test_normalize_retains_invalid_and_handles_timezone",
+    "test_replay_message_on_live_topic_is_dead_letter",
+    "test_nullable_schema_evolution_preserves_old_bronze",
+    "test_null_business_key_quarantines_and_valid_time_recovers_correction"
+  ],
+  "git_handoff": {
+    "branch": "feat/lakehouse-ml-completion",
+    "base": "main",
+    "code_checkpoint": "e18e0b0",
+    "draft_pull_request": "https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality/pull/2",
+    "prior_pr_1": "merged externally; preserved"
   }
 }

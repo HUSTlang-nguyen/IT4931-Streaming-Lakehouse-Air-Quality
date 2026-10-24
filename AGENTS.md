@@ -32,7 +32,7 @@ Goal triển khai đã được người dùng khởi động ngày 24/10/2026. 
 ## Git workflow
 
 - Dùng Git root/remote hiện tại; không tạo repository lồng nhau.
-- Scaffold ở `chore/project-scaffold`; triển khai trên `feat/air-quality-lakehouse` từ commit có đủ scaffold. Không giả định scaffold đã ở `main`.
+- Scaffold ở `chore/project-scaffold`; lượt đầu triển khai trên `feat/air-quality-lakehouse`. PR#1 đã merge; phần stack/ML tiếp tục trên `feat/lakehouse-ml-completion` từ main78fffbb, draft PR#2. Luôn kiểm branch/PR thực tế trước khi tiếp tục.
 - Commit nhỏ theo `feat:`, `fix:`, `test:`, `docs:`, `chore:`; xem diff, check secret/test phù hợp rồi stage đúng file liên quan.
 - Khi Goal được giao, push checkpoint và tạo draft PR theo prompt. Lượt scaffold chỉ commit/push, chưa tạo PR.
 - Không tự merge, force-push, xóa branch, reset phá thay đổi hoặc rewrite lịch sử đã push. Không mua cloud, xóa volume hay sửa dịch vụ ngoài dự án.

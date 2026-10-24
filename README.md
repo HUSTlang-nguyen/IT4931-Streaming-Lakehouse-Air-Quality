@@ -6,7 +6,7 @@ Python/PySpark phân tích PM2.5, PM10 tại ĐHBK và Công viên Nhân Chính,
 
 ## Chạy trên Windows / PowerShell
 
-Cần Docker Desktop Linux engine khoảng 8 GiB RAM, Python host và Git. Spark chạy trong container Python 3.11, không cài Java/Spark lên host.
+Cần Docker Desktop Linux engine khoảng 8 GiB RAM, Python host3.11+ và Git. Spark chạy trong container Python 3.11, không cài Java/Spark lên host.
 
 ```powershell
 python -m venv .venv
@@ -61,4 +61,4 @@ Gold dùng mean nguồn `/hours`, không tự bình quân raw timestamp 5 phút 
 
 ## GitHub
 
-[Repository](https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality), nhánh `feat/air-quality-lakehouse`, [draft PR #1](https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality/pull/1). Không tự merge. Chỉ commit code, config, lock, fixture/báo cáo nhỏ sạch secret; raw/model/checkpoint/cache local được ignore.
+[Repository](https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality), nhánh `feat/lakehouse-ml-completion`, [draft PR #2](https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality/pull/2). Không tự merge. Chỉ commit code, config, lock, fixture/báo cáo nhỏ sạch secret; raw/model/checkpoint/cache local được ignore.
