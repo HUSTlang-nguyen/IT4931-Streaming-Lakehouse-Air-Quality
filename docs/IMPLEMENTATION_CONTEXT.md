@@ -1,58 +1,52 @@
 # Context triển khai hiện tại
 
-## Checkpoint để tiếp tục
+## Checkpoint
 
-- Loại công việc hiện tại: chỉ scaffold/tài liệu, chưa tạo Goal.
-- Cập nhật: `2026-10-24T11:12:28+07:00`. STEP đã đồng bộ: `STEP-004`.
-- Git root: repository `IT4931-Streaming-Lakehouse-Air-Quality` (thư mục con workspace ban đầu); không init Git ở thư mục cha.
-- Remote: `https://github.com/HUSTlang-nguyen/IT4931-Streaming-Lakehouse-Air-Quality.git`.
-- Nhánh hiện tại: `chore/project-scaffold`, tracking `origin/chore/project-scaffold`; checkpoint scaffold `763b31a19faf95e8a376eba2d87ce5fe389b6376` đã commit và push thành công.
-- Checkpoint trên đã sạch ngay sau push; lượt cập nhật tài liệu này ghi nhận nó trong commit kế tiếp. Dùng `git status`/`git log` để biết HEAD và dirty state thực tế, không suy ra từ Markdown.
-- Bước tiếp theo: chờ người dùng bắt đầu Goal bằng GOAL_PROMPT.md; không tự chạy pipeline. Khi tiếp tục, kiểm tra commit tài liệu mới nhất và trạng thái remote trước.
+- Cập nhật `2026-10-24T15:40:39+07:00`, đồng bộ STEP-007; Goal active `start goal implement`, phạm vi đầy đủ theo [GOAL_PROMPT](../GOAL_PROMPT.md).
+- Git root repository con `IT4931-Streaming-Lakehouse-Air-Quality`, remote GitHub giữ nguyên; nhánh `feat/air-quality-lakehouse` từ `81ab9f2f0163a6cf600b1c56e66ae00a26d68faf`. Code Collector hiện chưa commit lúc ghi, đối chiếu git status khi tiếp tục.
+- P0 xong; P1/P3 tiến triển; P2–P6 chưa hoàn thành.
 
-## Yêu cầu được chốt
+## Đã code và đã kiểm chứng
 
-Docker local, Python/PySpark/Spark MLlib, pytest; PM2.5/PM10 hai trạm, backfill 180 ngày, polling 300 giây, overlap 24 giờ, đối soát 7 ngày mỗi 24 giờ. Thời gian lưu UTC, hiển thị Asia/Ho_Chi_Minh. RF từng trạm dự báo PM2.5 trước một giờ, persistence, MAE/RMSE, split thời gian 70/15/15. Không AQI/khuyến cáo sức khỏe/đại diện toàn Hà Nội.
+- [Settings](../src/air_quality/config/settings.py): secret repr-hidden, explicit .env, sensors, defaults, input validation.
+- [Events](../src/air_quality/contracts/events.py): UTC, fixed windows, envelope v1 với series_kind measurements/hours và provenance.
+- Collector [HTTP](../src/air_quality/collector/openaq.py), [state SQLite](../src/air_quality/collector/state.py), [service](../src/air_quality/collector/service.py), [publishers](../src/air_quality/collector/publisher.py), [CLI](../src/air_quality/cli.py). Raw archive trước publish, checkpoint sau ACK, retry dùng lại archive, sink-specific job identity.
+- 17 unit pass; 4 live contract pass, pip editable install và pip check sạch. XML ở artifacts/local, [báo cáo nhỏ](../artifacts/reports/collector-checkpoint.md).
+- Lab 01/02 đã có code/lệnh thật cho API/JSONL; Kafka phần lab chưa được kiểm chứng. Chưa có Spark/ML/dashboard/Compose.
 
-Code tên tiếng Anh, type hints, comment/docstring/lab tiếng Việt giải thích từng bước khó. Lab và script dùng code thật trong src; hướng dẫn thuyết trình chọn 6 đoạn code thật sau khi có implementation. Không tạo hàm giả.
+## Tiến trình đang sống cần kiểm tra trước khi thao tác
 
-Sensor ĐHBK: location 4946813, PM2.5 13502154, PM10 13502152. Nhân Chính: location 4946812, PM2.5 13502151, PM10 13502153. Khí chỉ mở rộng khi đủ dữ liệu.
+- Backfill `21843`: `.venv/Scripts/python.exe -m air_quality.cli backfill --end 2026-10-24T00:00:00Z --run-name hanoi-180d-20261024 --sink jsonl --output data/history-180d.jsonl`, stdout/stderr artifacts/local/backfill.log. Từ 2026-04-27 tới 2026-10-24, 4 sensor × raw/hours, job checkpoint trong checkpoints/collector.sqlite. Poll đúng handle hoặc xác minh PID; không restart vì timeout.
+- Các session Docker 16316/15755/65016 và live test 64845 đã terminal.
 
-## Thiết kế và triển khai thực tế
+## Dữ liệu / quyết định
 
-| Hạng mục | Thiết kế | Thực tế hiện tại |
-|---|---|---|
-| Hạ tầng | Kafka, Spark, REST catalog, MinIO, Trino, Superset, PostgreSQL metadata | Chưa có Compose/dịch vụ nào được dựng |
-| Thu thập | Metadata, live/backfill/replay, retry/checkpoint | Chỉ package/docstring, chưa gọi API |
-| Lưu trữ | Bronze raw, Silver MERGE, Gold có điều kiện | Chưa có bảng/DDL/job |
-| ML | RF/persistence causal features, split theo giờ | Chưa có model/dataset/metrics |
-| Dashboard | Trino/Superset, gaps/freshness/forecast | Chưa có dashboard |
-| Tài liệu | Prompt, kế hoạch, lab outline, walkthrough, presentation guide | Đã tạo và kiểm chứng scaffold; chưa kiểm chứng pipeline |
-| Kiểm thử | pytest unit/integration/live rõ ranh giới | Chưa có test nghiệp vụ; không báo pass pipeline |
+Hai trạm và sensor theo dictionary. Poll 300s, overlap24h, reconcile7days/24h; ingest UTC/display Asia/Ho_Chi_Minh. Key ở .env local ignored, không đọc/in key khi chỉ kiểm tra trạng thái.
 
-## Điểm vào code và tài liệu
+/hours là nguồn mean chính thức; live contract kiểm period1h/boundary/unique/parameter và lượng tử hóa3sig so summary.avg. Target ML/Gold sẽ là source-hourly series, không tự bình quân raw5phút. Raw interval vật lý vẫn chưa rõ, không tuyên bố resolved. Coverage nguồn>100% được giữ raw và không dùng trực tiếp. Khóa Silver phải gồm sensor_id, series_kind, period_start/end trong namespace; correction và DDL chi tiết chưa chốt.
 
-- [Package](../src/air_quality/README.md): config/contracts/collector/processing/forecasting/observability mới có README và __init__.py, chưa có public function/CLI.
-- [Kiến trúc](architecture.md), [dictionary](data-dictionary.md), [walkthrough](code-walkthrough.md), [presentation guide](presentation-guide.md), [labs](../labs/README.md).
-- [Prompt Goal độc lập](../GOAL_PROMPT.md), [kế hoạch](../IMPLEMENTATION_PLAN.md), [nhật ký](AGENT_WORK_LOG.md), [provenance đề xuất](proposal/README.md).
-- Evidence scaffold: [scaffold-verification](../artifacts/reports/scaffold-verification.md), 36 kiểm tra đạt và diff check sạch; chưa có kết quả pipeline.
+RF từng trạm t+1h, lag1/2/3/24h theo giờ thật, train/validation/test70/15/15 chronological, không leakage, baseline cùng mẫu, backtest tách operational. Chưa có ML.
 
-## Invariant và quyết định đang hiệu lực
+## Môi trường / Docker
 
-Giữ raw/provenance; Silver chống trùng theo sensor/khoảng đo, correction cần quy tắc từ nguồn; watermark không đủ cho dedup. Missing không thành 0. Replay tách namespace. Freshness theo sensor. ML không dùng tương lai để fill/tune, nhãn không vượt split cutoff. Bản khảo sát cũ 7.987 records không phải dữ liệu đã crawl ở repo.
+Python host3.13.12, .venv editable với dependencies pin pyproject; chưa khóa Python/Java/Spark runtime. Docker28.4.0 đã chạy, 16CPU/~7,46GiB RAM engine, host~15,4GiB.
 
-## Blocker và quyết định còn mở cho Goal
+Người dùng đã cho phép sửa lỗi khởi động Docker ngoài repo. Đã dừng Desktop, sao lưu `%LOCALAPPDATA%/Docker/run` thành `run.before-air-quality-20261024` sau unlink/reparse delete lỗi1920, tạo lại run và start thành công. Không xóa backup, không sửa settings/volumes/images.
 
-- Chưa xác minh `period.interval` một giờ so với nhịp timestamp 5 phút; chặn mean và target ML liên quan cho đến khi có cơ sở.
-- Chưa kiểm tra key/API/Docker/RAM/disk ở lượt scaffold; key không được lưu. Không giả định credential cũ còn dùng được.
-- Python host phát hiện 3.13.12, nhưng package chỉ khai báo nền >=3.10. Runtime Spark/Java và version matrix/dependency lock/catalog backend chưa chốt ở P1.
-- Chưa chốt schema wire/DDL/partition, correction tie-break, endpoint/cổng/CLI thực thi. `.env.example` chỉ là danh mục dự kiến, chưa có loader hoặc credentials dịch vụ.
-- Lab gốc ngoài repository, chưa được vendor; xem provenance. Không tạo dependency vào file ngoài repo để chạy sản phẩm.
+Đã xác minh tags Python3.11.13-slim-bookworm, Kafka3.9.1, iceberg-rest1.6.0, Trino476, Superset4.1.2, PostgreSQL16.9-bookworm qua registry; digest ở data/discovery/image-manifests.json. **MinIO DockerHub repo trả401, cần chọn image official registry khả dụng (Quay)**. Đây mới kiểm tag, chưa chứng minh tương thích runtime.
 
-## Lệnh đã có và chưa có
+## Lệnh hiện có
 
-Có thể kiểm tra Git bằng `git status --short --branch`, `git log -5 --oneline` và đọc pyproject bằng Python `tomllib` khi Python >=3.11. Package chỉ import bằng src path; đây không phải CLI. Chưa có start/backfill/live/train/predict/test/benchmark runnable; Goal phải thêm và kiểm chứng trước khi ghi cách dùng.
+- `.venv/Scripts/python.exe -m air_quality.cli --help` (inspect/backfill/live/replay). inspect default JSONL, không broker.
+- `.venv/Scripts/python.exe -m pytest tests -q --basetemp=artifacts/local/<unique-dir>`: offline skips live; basetemp phải là chỗ test riêng vì pytest có thể dọn.
+- Live: thêm --run-live, dùng chung limiter SQLite với backfill. Không --run-integration trừ khi stack đã sẵn sàng.
+- Chưa có start/train/predict/benchmark.
 
-## Quy trình tiếp tục sau scaffold
+## Bước tiếp theo cụ thể
 
-Không tự bắt đầu Goal hoặc Docker. Khi người dùng giao Goal, đọc AGENTS/context/plan/log, xác minh Git và tạo/reuse `feat/air-quality-lakehouse` từ checkpoint chứa scaffold nếu main chưa merge. Làm P1 trước. Push checkpoint và draft PR theo Goal; scaffold chỉ push, không PR/merge. Cập nhật log/context sau mỗi mốc; không copy toàn bộ log vào đây.
+1. Xác minh tag MinIO trên Quay, viết Compose project riêng (không ảnh hưởng n8n images hiện có), SQLite-persist REST catalog nếu driver phù hợp, PostgreSQL metadata Superset. Chốt/pin matrix sau chạy thật.
+2. Giới hạn RAM tổng phù hợp8GiB Docker; start Kafka/MinIO/catalog/Trino và build Python3.11/Java17/Spark3.5.6, Iceberg1.9.2 + Kafka connector3.5.6 (dự kiến, chưa verify).
+3. Cần cách publish archive đã tải qua Kafka giữ mode backfill (khác replay mode) để dùng dữ liệu đã thu mà không gọi lại API. Sau đó Bronze/Silver/Gold, ML/dashboard và P6.
+4. Ghi coverage thực khi backfill xong; không lấy rows ACK lũy kế làm unique coverage. Viết/push checkpoint Collector, draft PR khi có implementation review được; chưa merge.
+
+[Nhật ký](AGENT_WORK_LOG.md), [kế hoạch](../IMPLEMENTATION_PLAN.md), [kiến trúc](architecture.md), [dictionary](data-dictionary.md) là chỉ mục tiếp tục. Kiểm Git/process/file thực tế trước khi tin trạng thái Markdown.

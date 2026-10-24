@@ -2,16 +2,16 @@
 
 Đồ án Python/PySpark giám sát PM2.5, PM10 tại ĐHBK và Công viên Nhân Chính, Hà Nội; dự kiến bổ sung dự báo PM2.5 trước một giờ.
 
-**Trạng thái: scaffold và tài liệu chuẩn bị.** Chưa có Collector, Docker Compose, pipeline, dashboard hoặc mô hình chạy được. Số liệu khảo sát trong đề xuất được ghi nhận ngày 23/10/2026, chưa tái kiểm chứng trong repository này.
+**Trạng thái: đã có Collector Python và kiểm chứng OpenAQ; stack Lakehouse/ML chưa triển khai xong.** Unit tests và hợp đồng hourly bốn sensor đã chạy; lịch sử 180 ngày đang được tải có checkpoint. Không coi JSONL là bằng chứng Kafka/Iceberg/dashboard.
 
 ## Bắt đầu với Goal
 
 1. Mở đúng thư mục repository này trong Codex; không dùng thư mục cha làm Git root.
 2. Đọc [quy tắc agent](AGENTS.md), [context](docs/IMPLEMENTATION_CONTEXT.md) và [kế hoạch](IMPLEMENTATION_PLAN.md).
-3. Khi muốn triển khai, gửi toàn bộ phần prompt trong [GOAL_PROMPT.md](GOAL_PROMPT.md). Chuẩn bị repository chưa tạo Goal.
+3. Khi muốn triển khai, gửi toàn bộ phần prompt trong [GOAL_PROMPT.md](GOAL_PROMPT.md). File prompt không tự tạo Goal; xem context để biết phiên đang chạy tới đâu.
 4. Khi Collector được triển khai, cung cấp `OPENAQ_API_KEY` qua môi trường hoặc `.env` cục bộ. [.env.example](.env.example) chỉ là danh mục cấu hình dự kiến; chưa có config loader.
 
-Chưa có lệnh khởi động hệ thống. Agent triển khai sẽ bổ sung Python CLI, Docker và hướng dẫn PowerShell sau khi kiểm chứng.
+Các lệnh Collector đã có: `.venv/Scripts/python.exe -m air_quality.cli --help` (inspect/backfill/live/replay). Xem [Lab 01](labs/01-openaq.md) và [Lab 02](labs/02-collector.md). Các lệnh start/train/predict/benchmark chưa có, sẽ bổ sung cùng module tương ứng.
 
 ## Kiến trúc dự kiến
 

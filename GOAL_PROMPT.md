@@ -1,10 +1,10 @@
 # Prompt Goal — Air Quality Streaming Lakehouse
 
-File chuẩn bị, chưa có Goal được tạo. Khi muốn triển khai, gửi toàn bộ nội dung phần dưới cho Codex trong repository này ở chế độ có thể chỉnh sửa file.
+Đặc tả độc lập để bắt đầu hoặc khôi phục Goal. Khi muốn triển khai, gửi phần prompt bên dưới trong repository này ở chế độ có thể chỉnh sửa file. Trạng thái hiện tại xem IMPLEMENTATION_CONTEXT.md và công cụ Goal; không suy ra từ sự tồn tại file này.
 
 ---
 
-Tạo và theo đuổi một Goal: triển khai, chạy và kiểm chứng hoàn chỉnh Air Quality Streaming Lakehouse trên Docker local bằng Python, với code học được theo dạng lab và dùng được khi thuyết trình. Không tự đặt ngân sách token.
+Nếu chưa có Goal hoạt động, tạo và theo đuổi Goal dưới đây; nếu đã có Goal phù hợp, tiếp tục Goal đó, không tạo trùng. Mục tiêu: triển khai, chạy và kiểm chứng hoàn chỉnh Air Quality Streaming Lakehouse trên Docker local bằng Python, với code học được theo dạng lab và dùng được khi thuyết trình. Không tự đặt ngân sách token.
 
 ## 1. Context và tiến độ
 

@@ -5,12 +5,22 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "air-quality-lakehouse"
 version = "0.0.0"
-description = "Scaffold Python cho đồ án Air Quality Streaming Lakehouse"
+description = "Pipeline OpenAQ, Streaming Lakehouse và dự báo PM2.5"
 readme = "README.md"
 requires-python = ">=3.10"
-# Scaffold import được; chưa phải runtime PySpark đã kiểm chứng.
-# Chốt dependencies/lock theo ma trận tương thích ở P1.
-dependencies = []
+dependencies = [
+    "httpx==0.28.1",
+    "python-dotenv==1.1.1",
+    "confluent-kafka==2.11.0",
+    "filelock==3.19.1",
+    "tzdata==2025.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.2"]
+
+[project.scripts]
+air-quality = "air_quality.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

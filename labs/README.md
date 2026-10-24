@@ -1,6 +1,6 @@
 # Lộ trình lab
 
-**Chưa có lab thực thi.** Các bài sau được viết và chạy cùng implementation; không tạo notebook riêng sao chép nghiệp vụ.
+**Đã có phần Collector/API:** [Lab 01](01-openaq.md), [Lab 02](02-collector.md). Phần Kafka và các bài sau còn chờ kiểm chứng stack; không tạo notebook riêng sao chép nghiệp vụ.
 
 | Bài | Chủ đề | Đầu ra nghiệm thu dự kiến |
 |---|---|---|

@@ -9,7 +9,7 @@
 
 ## Phạm vi
 
-Hiện chỉ có scaffold. Chỉ bắt đầu pipeline khi người dùng yêu cầu triển khai/Goal; đọc `GOAL_PROMPT.md` khi đó. Không tự tạo Goal chỉ vì prompt tồn tại. Runtime và dependency lock chưa được kiểm chứng.
+Goal triển khai đã được người dùng khởi động ngày 24/10/2026. Đọc `GOAL_PROMPT.md` làm hợp đồng phạm vi. Collector đã có; stack/ML còn triển khai. Không suy ra hoàn thành từ scaffold hoặc unit tests. Dependency host đã cài, runtime Spark chưa kiểm chứng.
 
 ## Python và cách giải thích
 

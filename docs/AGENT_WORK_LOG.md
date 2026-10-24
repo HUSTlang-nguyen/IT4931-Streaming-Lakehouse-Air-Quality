@@ -67,3 +67,30 @@ Hash commit mới ghi ở STEP sau, tránh tự tham chiếu hash chứa chính 
 - Trạng thái: P0 hoàn thành; bản ghi checkpoint này sẽ commit/push tiếp bằng commit docs. Xem Git thực tế để biết hash tài liệu mới nhất.
 - Vấn đề còn lại: P1–P6 chưa triển khai; interval semantics/API/runtime và ML vẫn cần kiểm chứng. Không có Goal/Docker/API/ML được khởi chạy trong lượt chuẩn bị.
 - Bước tiếp theo: kiểm tra cuối và push commit docs; sau bàn giao chờ người dùng giao Goal, đọc context/plan/log rồi bắt đầu P1 trên nhánh triển khai từ scaffold.
+
+## STEP-005 — 2026-10-24T15:40:39+07:00 — Bắt đầu Goal, khảo sát API và môi trường
+
+- Git: tạo `feat/air-quality-lakehouse` từ `81ab9f2f0163a6cf600b1c56e66ae00a26d68faf`, scaffold có đủ. Người dùng đã giao Goal implement; không thu hẹp phạm vi.
+- Đã đọc AGENTS/context/plan/log/GOAL_PROMPT và lab stock trong workspace cha. Xác nhận OpenAQ key cũ dùng được; cấu hình .env ignored, không log key.
+- Phát hiện: /hours là series mean nguồn, raw interval/cadence chưa cùng ý nghĩa; giữ series riêng và dùng target nguồn có ghi rõ. Bốn live contract test đã pass sau sửa giả định lượng tử hóa value; coverage nguồn bất thường không được tin trực tiếp.
+- Kiểm chứng: metadata + raw/hours payload ở data/discovery; report `artifacts/reports/collector-checkpoint.md`.
+- Trạng thái: tiến triển P1; version matrix/runtime chưa kiểm chứng, chưa hoàn thành P1.
+- Bước tiếp: Collector/P2 và backfill.
+
+## STEP-006 — 2026-10-24T15:40:39+07:00 — Collector và kiểm thử có ACK/checkpoint
+
+- Git: `feat/air-quality-lakehouse`, nền `81ab9f2f0163a6cf600b1c56e66ae00a26d68faf`, code chưa commit lúc ghi.
+- Đã thực hiện: settings/env, UTC/envelope v1, retry/rate limiter SQLite, raw page archive, ACK/checkpoint, publishers JSONL/Kafka, CLI inspect/backfill/live/replay, lab01/02 và unit/live tests.
+- Kiểm chứng: 17 unit passed; 4 live passed (không skip), pip editable build/install + pip check; inspect thật 6 hàng. Lỗi test tmpdir sandbox được giải quyết bằng basetemp trong artifacts/local. Lỗi marker nhầm tên thư mục và giả định rounding được sửa có bằng chứng.
+- Backfill đang chạy: exec session `21843`, command/tiến độ trong artifacts/local/backfill.log và SQLite; không restart nếu process còn sống. Raw/data ignored; tổng row ACK chưa là Silver count.
+- Quyết định: sink identity thuộc job ID để capture file không đánh dấu đã gửi Kafka; protocol interface không phải hàm nghiệp vụ giả.
+- Trạng thái: Collector đã kiểm chứng file/API; Kafka chưa kiểm chứng broker thật. Goal còn toàn P2–P6.
+- Bước tiếp: dựng broker/REST catalog/MinIO/Spark/Trino, đưa lịch sử đã thu qua Kafka.
+
+## STEP-007 — 2026-10-24T15:40:39+07:00 — Sửa Docker runtime socket theo quyền người dùng
+
+- Lỗi ban đầu: backend crashed initializing inference socket; CLI start/info đang chờ ở sessions 16316/15755. Không coi timeout quan sát là process đã chết.
+- Người dùng xác nhận cho phép sửa riêng lỗi Docker ngoài repository. Dừng Desktop bằng CLI; unlink/reparse delete socket lỗi 1920. Sau kiểm tra absolute paths, sao lưu thư mục run trong cùng Docker root, tạo run sạch, start lại. Không sửa settings hoặc volumes/images.
+- Kiểm chứng: start session 65016 exit 0; Docker engine 28.4.0, 16 CPU/RAM ~7,46 GiB; các session cũ 16316/15755 đã terminal, không còn chờ. Không có container chạy trước khi dựng dự án.
+- Trạng thái: blocker Docker đã giải quyết; backup runtime sockets giữ nguyên.
+- Bước tiếp: image tag/digest verification và Compose giới hạn RAM, tiếp tục Goal.

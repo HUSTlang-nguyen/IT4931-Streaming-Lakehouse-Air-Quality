@@ -1,6 +1,6 @@
 # Đọc code theo đường đi của một measurement
 
-**Trạng thái:** chỉ có package scaffold và docstring. Chưa có hàm nghiệp vụ để trích. Các đường dẫn sau là trách nhiệm dự kiến, không phải chức năng đã chạy.
+**Đã chạy:** Settings → OpenAQClient.get → make_event → Collector.collect_window → JsonlPublisher.publish → StateStore.acknowledge. Kafka publisher đã có code nhưng chưa kiểm chứng broker; processing/forecasting chưa triển khai.
 
 ## Trình tự đọc
 
@@ -21,3 +21,9 @@
 - Mối liên hệ với bước trước/sau, tác động khi duplicate/late/corrected data.
 
 Không ghi tên hàm/lệnh giả ở scaffold. Agent hoàn thiện từng mục cùng implementation và đồng bộ sau refactor. [Labs](../labs/README.md) là đường học thực hành; file này là chỉ mục đọc code.
+
+## Lần theo code Collector hiện có
+
+Đọc `run_collection` trong [cli.py](../src/air_quality/cli.py), sau đó [collect_window](../src/air_quality/collector/service.py). `location_metadata` kiểm tra đúng sensor/parameter; `OpenAQClient.get` xin budget trước từng HTTP attempt; `make_event` giữ raw và provenance; `atomic_json` ghi raw bất biến; publisher ACK xong mới `StateStore.acknowledge`.
+
+[Test crash/ACK](../tests/unit/test_collector.py) chạy đúng service với HTTP/broker double, SQLite và file thật. [Live contract](../tests/integration/test_openaq_live.py) kiểm tra API thật khi bật --run-live. Xem Lab 01/02 để chạy; chưa có code Spark để trích.

@@ -26,7 +26,7 @@ Chưa phải schema thực thi hay DDL. Dựa trên đề xuất được lưu t
 | quality_flags | Invalid/không đủ điều kiện cùng lý do | Bảo toàn raw; không âm thầm biến lỗi thành 0 |
 | coordinates | Vị trí trạm | Có thể chỉ nằm ở metadata, measurement không bắt buộc có |
 
-Khóa Silver dự kiến: `(sensor_id, period_start, period_end)` trong namespace dữ liệu tương ứng. Nếu nguồn sửa cùng khóa, phải có quy tắc chọn bản mới được kiểm chứng, không chọn ngẫu nhiên. Bronze giữ lần thu thập để truy vết; thu thập lặp có thể thêm raw nhưng không thêm bản ghi logic Silver.
+Khóa Silver dự kiến: `(sensor_id, series_kind, period_start, period_end)` trong namespace dữ liệu tương ứng. Nếu nguồn sửa cùng khóa, phải có quy tắc chọn bản mới được kiểm chứng, không chọn ngẫu nhiên. Bronze giữ lần thu thập để truy vết; thu thập lặp có thể thêm raw nhưng không thêm bản ghi logic Silver.
 
 ## Gold và chất lượng
 
@@ -46,3 +46,9 @@ Lưu count, expected count theo cadence đã xác minh, coverage, last event tim
 | actual_value, error | Bổ sung sau khi có actual hợp lệ |
 
 Features dự kiến: PM2.5 hiện tại, lag 1/2/3/24 giờ và giờ trong ngày địa phương. Giữ null/gap minh bạch; không nội suy tương lai. Ghi split time range, số mẫu và MAE/RMSE model/persistence trên cùng mẫu; chưa có metric thực nghiệm nào ở scaffold.
+
+## Envelope v1 đã triển khai (Collector)
+
+Xem `make_event` trong `src/air_quality/contracts/events.py`: schema_version, event_id, job_id, location_id, sensor_id, station_name, parameter_name, series_kind, ingest_mode, ingested_at, request_from/to, raw_payload và location_metadata. Hai payload cuối là JSON string để bảo toàn nguồn trước Spark. series_kind là measurements/hours. Job ID chứa sink destination để capture file không chiếm checkpoint Kafka.
+
+Target ML được định nghĩa là PM2.5 giờ do endpoint OpenAQ /hours cung cấp. Bốn sensor đã qua live contract test: period dài đúng một giờ, mốc cuối tròn giờ, timestamp không trùng và value nằm trong nửa đơn vị chữ số cuối của summary.avg sau lượng tử hóa ba chữ số có nghĩa. Đây là quan sát API hiện tại, không chứng nhận độ chính xác cảm biến hoặc lời giải cho rolling interval raw. Giữ nguyên value và summary nguồn; không tự bình quân lại raw 5 phút.

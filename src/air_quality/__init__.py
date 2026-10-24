@@ -1,1 +1,1 @@
-"""Scaffold cho pipeline chất lượng không khí; chưa có logic nghiệp vụ."""
+"""Pipeline chất lượng không khí: Collector đã có, Lakehouse/ML đang triển khai."""
